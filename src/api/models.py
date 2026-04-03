@@ -4,9 +4,9 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 db = SQLAlchemy()
 
-class Admin(db.Model):
+class Administrator(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(120))
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password: Mapped[str] = mapped_column(nullable=False)
     
@@ -16,7 +16,7 @@ class Admin(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "email": self.email,
+            "email": self.email
             # do not serialize the password, its a security breach
         }
 
@@ -32,6 +32,7 @@ class User(db.Model):
         return {
             "id": self.id,
             "nickname": self.nickname,
-            "email": self.email,
+            "email": self.email
             # do not serialize the password, its a security breach
         }
+
