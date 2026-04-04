@@ -9,14 +9,20 @@ import { Layout } from "./pages/Layout";
 import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
-import Administrators from "./pages/Administrators"
-import Administrator from "./pages/Administrator";
-import NewAdministrator from "./pages/NewAdministrator";
-import UpdateAdministrator from "./pages/UpdateAdministrator";
-import Users from "./pages/Users";
-import User from "./pages/User";
-import UpdateUser from "./pages/UpdateUser";
-import NewUser from "./pages/NewUser";
+
+import Administrators from "./pages/Administrators/Administrators";
+import NewAdministrator from "./pages/Administrators/NewAdministrator";
+import UpdateAdministrator from "./pages/Administrators/UpdateAdministrator";
+import Administrator from "./pages/Administrators/Administrator";
+
+import Users from "./pages/Users/Users";
+import NewUser from "./pages/Users/NewUser";
+import UpdateUser from "./pages/Users/UpdateUser";
+import User from "./pages/Users/User";
+import Companies from "./pages/Company/Companies";
+import NewCompany from "./pages/Company/NewCompany";
+import UpdateCompany from "./pages/Company/UpdateCompany";
+import Company from "./pages/Company/Company";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -45,6 +51,12 @@ export const router = createBrowserRouter(
         <Route path="/new_user" element={<NewUser />} />
         <Route path="/update_user/:userId" element={<UpdateUser />} />
         <Route path="/user/:userId" element={ <User />} />
+
+        {/* Companies */}
+        <Route path="/company" element={<Companies />} />
+        <Route path="/new_company" element={<NewCompany />} />
+        <Route path="/update_company/:companyId" element={<UpdateCompany />} />
+        <Route path="/company/:companyId" element={ <Company />} />
       </Route>
     )
 );

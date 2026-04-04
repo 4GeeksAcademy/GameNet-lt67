@@ -38,6 +38,7 @@ export const Home = () => {
 		<div className="text-center mt-5">
 			<button className="btn btn-warning" onClick={()=> navigate("/administrator")}>Administrators</button>
 			<button className="btn btn-warning" onClick={()=> navigate("/user")}>Users</button>
+			<button className="btn btn-warning" onClick={()=> navigate("/company")}>Companies</button>
 			<div className="alert alert-info">
 				{store.message ? (
 					<span>{store.message}</span>
