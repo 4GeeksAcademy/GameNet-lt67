@@ -97,3 +97,77 @@ def update_administrator(admin_id):
 
     return jsonify(admin.serialize()), 200
 
+# =========================
+# CRUD USER
+# =========================
+
+@api.route('/user', methods=['GET'])
+def get_users():
+
+    all_users = User.query.all()
+    results = list(map(lambda user: user.serialize(), all_users))
+
+    return jsonify(results), 200
+
+@api.route('/user/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        return jsonify({
+            "error": "User not found"
+        }), 400 
+
+    return jsonify(user.serialize()), 200
+
+
+@api.route('/user/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+
+    user = User.query.filter_by(id=user_id).first()
+    if user is None:
+        return jsonify({
+            "error": "User not found"
+        }), 400 
+    
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({"message": "User " + user.name + " deleted succesfully."}), 200
+
+@api.route('/user', methods=['POST'])
+def create_user():
+
+    body = request.get_json()
+    user = User.query.filter_by(email=body['email']).first()
+    
+    if user:
+        return jsonify({
+            "error": "This email already exists"
+        }), 401
+    
+    user = User(**body)
+    db.session.add(user)
+    db.session.commit()
+
+    response_body = {
+        "message": "New User created"
+    }
+    return jsonify(response_body), 200
+
+@api.route('/user/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+
+    user = User.query.filter_by(id=user_id).first()
+    body = request.get_json()
+    if user is None:
+        return jsonify({
+            "error": "User not found"
+        }), 400 
+    
+    user.nickname = body.get('nickname',user.nickname)
+    user.email = body.get('email',user.email) 
+    
+    db.session.commit()
+
+    return jsonify(user.serialize()), 200
