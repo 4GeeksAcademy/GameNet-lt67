@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Administrator
+from api.models import db, User, Administrator, Company
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
@@ -171,3 +171,83 @@ def update_user(user_id):
     db.session.commit()
 
     return jsonify(user.serialize()), 200
+
+# =========================
+# CRUD COMPANY
+# =========================
+
+@api.route('/company', methods=['GET'])
+def get_companies():
+
+    all_companies = Company.query.all()
+    results = list(map(lambda company: company.serialize(), all_companies))
+
+    return jsonify(results), 200
+
+@api.route('/company/<int:company_id>', methods=['GET'])
+def get_company(company_id):
+
+    company = Company.query.filter_by(id=company_id).first()
+    if company is None:
+        return jsonify({
+            "error": "User not found"
+        }), 400 
+
+    return jsonify(company.serialize()), 200
+
+
+@api.route('/company/<int:company_id>', methods=['DELETE'])
+def delete_company(company_id):
+
+    company = Company.query.filter_by(id=company_id).first()
+    if company is None:
+        return jsonify({
+            "error": "Company not found"
+        }), 400 
+    
+    db.session.delete(company)
+    db.session.commit()
+
+    return jsonify({"message": "Company " + company.name + " deleted succesfully."}), 200
+
+@api.route('/company', methods=['POST'])
+def create_company():
+
+    body = request.get_json()
+    company = Company.query.filter_by(email=body['email']).first()
+    
+    if company:
+        return jsonify({
+            "error": "This email already exists"
+        }), 401
+    
+    company = Company(**body)
+    db.session.add(company)
+    db.session.commit()
+
+    response_body = {
+        "message": "New Company created"
+    }
+    return jsonify(response_body), 200
+
+@api.route('/company/<int:company_id>', methods=['PUT'])
+def update_company(company_id):
+
+    company = Company.query.filter_by(id=company_id).first()
+    body = request.get_json()
+    if company is None:
+        return jsonify({
+            "error": "Company not found"
+        }), 400 
+    
+    company.name = body.get('name',company.name)
+    company.email = body.get('email',company.email)
+    company.description = body.get('description',company.description)
+    company.website_url = body.get('website_url',company.website_url) 
+    company.logo_img = body.get('logo_img',company.logo_img)
+    company.banner_img = body.get('banner_img',company.banner_img)  
+    
+    db.session.commit()
+
+    return jsonify(company.serialize()), 200
+
