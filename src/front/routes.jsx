@@ -13,6 +13,10 @@ import Administrators from "./pages/Administrators"
 import Administrator from "./pages/Administrator";
 import NewAdministrator from "./pages/NewAdministrator";
 import UpdateAdministrator from "./pages/UpdateAdministrator";
+import Users from "./pages/Users";
+import User from "./pages/User";
+import UpdateUser from "./pages/UpdateUser";
+import NewUser from "./pages/NewUser";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -36,7 +40,11 @@ export const router = createBrowserRouter(
         <Route path="/update_administrator/:adminId" element={<UpdateAdministrator />} />
         <Route path="/administrator/:adminId" element={ <Administrator />} />
 
-        {/* Users */} 
+        {/* Users */}
+        <Route path="/user" element={<Users />} />
+        <Route path="/new_user" element={<NewUser />} />
+        <Route path="/update_user/:userId" element={<UpdateUser />} />
+        <Route path="/user/:userId" element={ <User />} />
       </Route>
     )
 );
