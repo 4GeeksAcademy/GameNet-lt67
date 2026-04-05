@@ -48,6 +48,7 @@ class Company(db.Model):
     banner_img: Mapped[str] = mapped_column(String(250))
 
     game = relationship("Game", back_populates="company")
+    companypost = relationship("CompanyPost", back_populates="company")
 
     def serialize(self):
         return {
@@ -58,6 +59,25 @@ class Company(db.Model):
             "website_url": self.website_url,
             "logo_img": self.logo_img,
             "banner_img": self.banner_img
+            # do not serialize the password, its a security breach
+        }
+    
+class CompanyPost(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    id_company: Mapped[int] = mapped_column(ForeignKey("company.id"), nullable=False)
+    message: Mapped[str] = mapped_column(String(250))
+    image: Mapped[str] = mapped_column(String(250))
+    post_date: Mapped[str] = mapped_column(String(250))
+
+    company = relationship("Company", back_populates="companypost")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "id_company": self.id_company,
+            "message": self.message,
+            "image": self.image,
+            "post_date": self.post_date
             # do not serialize the password, its a security breach
         }
     

@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Administrator, Company, Game
+from api.models import db, User, Administrator, Company, Game, CompanyPost
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
@@ -330,4 +330,76 @@ def update_game(game_id):
     db.session.commit()
 
     return jsonify(game.serialize()), 200
+
+
+# =========================
+# CRUD COMPANY POST
+# =========================
+
+@api.route('/companypost', methods=['GET'])
+def get_companyposts():
+
+    all_company_posts = CompanyPost.query.all()
+    results = list(map(lambda post: post.serialize(), all_company_posts))
+
+    return jsonify(results), 200
+
+@api.route('/companypost/<int:companypost_id>', methods=['GET'])
+def get_companypost(companypost_id):
+
+    companypost = CompanyPost.query.filter_by(id=companypost_id).first()
+    if companypost is None:
+        return jsonify({
+            "error": "Company Post not found"
+        }), 400 
+
+    return jsonify(companypost.serialize()), 200
+
+
+@api.route('/companypost/<int:companypost_id>', methods=['DELETE'])
+def delete_companypost(companypost_id):
+
+    companypost = CompanyPost.query.filter_by(id=companypost_id).first()
+    if companypost is None:
+        return jsonify({
+            "error": "Company Post not found"
+        }), 400 
+    
+    db.session.delete(companypost)
+    db.session.commit()
+
+    return jsonify({"message": "Company Post " + companypost.name + " deleted succesfully."}), 200
+
+@api.route('/companypost', methods=['POST'])
+def create_companypost():
+
+    body = request.get_json()
+    
+   
+    companypost = CompanyPost(**body)
+    db.session.add(companypost)
+    db.session.commit()
+
+    response_body = {
+        "message": "New Company Post created"
+    }
+    return jsonify(response_body), 200
+
+@api.route('/companypost/<int:companypost_id>', methods=['PUT'])
+def update_companypost(companypost_id):
+
+    companypost = CompanyPost.query.filter_by(id=companypost_id).first()
+    body = request.get_json()
+    if companypost is None:
+        return jsonify({
+            "error": "Company Post not found"
+        }), 400 
+    
+    companypost.message = body.get('message',companypost.message)
+    companypost.image = body.get('image',companypost.image)
+    companypost.post_date = body.get('post_date',companypost.post_date)
+    
+    db.session.commit()
+
+    return jsonify(companypost.serialize()), 200
 
