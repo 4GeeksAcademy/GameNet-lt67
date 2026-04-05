@@ -19,10 +19,16 @@ import Users from "./pages/Users/Users";
 import NewUser from "./pages/Users/NewUser";
 import UpdateUser from "./pages/Users/UpdateUser";
 import User from "./pages/Users/User";
+
 import Companies from "./pages/Company/Companies";
 import NewCompany from "./pages/Company/NewCompany";
 import UpdateCompany from "./pages/Company/UpdateCompany";
 import Company from "./pages/Company/Company";
+
+import Games from "./pages/Games/Games";
+import Game from "./pages/Games/Game";
+import NewGame from "./pages/Games/NewGame";
+import UpdateGame from "./pages/Games/UpdateGame";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -57,6 +63,12 @@ export const router = createBrowserRouter(
         <Route path="/new_company" element={<NewCompany />} />
         <Route path="/update_company/:companyId" element={<UpdateCompany />} />
         <Route path="/company/:companyId" element={ <Company />} />
+
+        {/* Games */}
+        <Route path="/game" element={<Games />} />
+        <Route path="/new_game" element={<NewGame />} />
+        <Route path="/update_game/:gameId" element={<UpdateGame />} />
+        <Route path="/game/:gameId" element={ <Game />} />
       </Route>
     )
 );

@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Administrator, Company
+from api.models import db, User, Administrator, Company, Game
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
@@ -190,7 +190,7 @@ def get_company(company_id):
     company = Company.query.filter_by(id=company_id).first()
     if company is None:
         return jsonify({
-            "error": "User not found"
+            "error": "Company not found"
         }), 400 
 
     return jsonify(company.serialize()), 200
@@ -250,4 +250,84 @@ def update_company(company_id):
     db.session.commit()
 
     return jsonify(company.serialize()), 200
+
+# =========================
+# CRUD GAME
+# =========================
+
+@api.route('/game', methods=['GET'])
+def get_games():
+
+    all_games = Game.query.all()
+    results = list(map(lambda game: game.serialize(), all_games))
+
+    return jsonify(results), 200
+
+@api.route('/game/<int:game_id>', methods=['GET'])
+def get_game(game_id):
+
+    game = Game.query.filter_by(id=game_id).first()
+    if game is None:
+        return jsonify({
+            "error": "Game not found"
+        }), 400 
+
+    return jsonify(game.serialize()), 200
+
+
+@api.route('/game/<int:game_id>', methods=['DELETE'])
+def delete_game(game_id):
+
+    game = Game.query.filter_by(id=game_id).first()
+    if game is None:
+        return jsonify({
+            "error": "Game not found"
+        }), 400 
+    
+    db.session.delete(game)
+    db.session.commit()
+
+    return jsonify({"message": "Game " + game.name + " deleted succesfully."}), 200
+
+@api.route('/game', methods=['POST'])
+def create_game():
+
+    body = request.get_json()
+    game = Game.query.filter_by(name=body['name']).first()
+    
+    if game:
+        return jsonify({
+            "error": "This game already exists"
+        }), 401
+    
+    game = Game(**body)
+    db.session.add(game)
+    db.session.commit()
+
+    response_body = {
+        "message": "New Game created"
+    }
+    return jsonify(response_body), 200
+
+@api.route('/game/<int:game_id>', methods=['PUT'])
+def update_game(game_id):
+
+    game = Game.query.filter_by(id=game_id).first()
+    body = request.get_json()
+    if game is None:
+        return jsonify({
+            "error": "Game not found"
+        }), 400 
+    
+    game.name = body.get('name',game.name)
+    game.trailer_url = body.get('trailer_url',game.trailer_url)
+    game.release_date = body.get('release_date',game.release_date)
+    game.total_sales = body.get('total_sales',game.total_sales) 
+    game.current_players = body.get('current_players',game.current_players)
+    game.description = body.get('description',game.description)
+    game.cover_img = body.get('cover_img',game.cover_img)  
+    
+    db.session.commit()
+
+    return jsonify(game.serialize()), 200
 
