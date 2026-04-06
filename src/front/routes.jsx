@@ -34,6 +34,11 @@ import CompanyPosts from "./pages/CompanyPost/CompanyPosts";
 import UpdateCompanyPost from "./pages/CompanyPost/UpdateCompanyPost";
 import NewCompanyPost from "./pages/CompanyPost/NewCompanyPost";
 
+import Console from "./pages/Consoles/Console";
+import Consoles from "./pages/Consoles/Consoles";
+import NewConsole from "./pages/Consoles/NewConsole";
+import UpdateConsole from "./pages/Consoles/UpdateConsole";
+
 export const router = createBrowserRouter(
     createRoutesFromElements(
     // CreateRoutesFromElements function allows you to build route elements declaratively.
@@ -79,6 +84,13 @@ export const router = createBrowserRouter(
         <Route path="/new_companypost" element={<NewCompanyPost />} />
         <Route path="/update_companypost/:companyPostId" element={<UpdateCompanyPost />} />
         <Route path="/companypost/:companyPostId" element={ <CompanyPost />} />
+
+
+         {/* Consoles */}
+        <Route path="/console" element={<Consoles />} />
+        <Route path="/new_console" element={<NewConsole />} />
+        <Route path="/update_console/:consoleId" element={<UpdateConsole />} />
+        <Route path="/console/:consoleId" element={ <Console />} />
       </Route>
     )
 );

@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Administrator, Company, Game, CompanyPost
+from api.models import db, User, Administrator, Company, Game, CompanyPost, Console
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
@@ -403,3 +403,77 @@ def update_companypost(companypost_id):
 
     return jsonify(companypost.serialize()), 200
 
+# =========================
+# CRUD CONSOLE
+# =========================
+
+@api.route('/console', methods=['GET'])
+def get_consoles():
+
+    all_consoles = Console.query.all()
+    results = list(map(lambda console: console.serialize(), all_consoles))
+
+    return jsonify(results), 200
+
+@api.route('/console/<int:console_id>', methods=['GET'])
+def get_console(console_id):
+
+    console = Console.query.filter_by(id=console_id).first()
+    if console is None:
+        return jsonify({
+            "error": "Console not found"
+        }), 400 
+
+    return jsonify(console.serialize()), 200
+
+
+@api.route('/console/<int:console_id>', methods=['DELETE'])
+def delete_console(console_id):
+
+    console = Console.query.filter_by(id=console_id).first()
+    if console is None:
+        return jsonify({
+            "error": "Console not found"
+        }), 400 
+    
+    db.session.delete(console)
+    db.session.commit()
+
+    return jsonify({"message": "Console " + console.name + " deleted succesfully."}), 200
+
+@api.route('/console', methods=['POST'])
+def create_console():
+
+    body = request.get_json()
+    console = Console.query.filter_by(name=body['name']).first()
+    
+    if console:
+        return jsonify({
+            "error": "This Console already exists"
+        }), 401
+    
+    console = Console(**body)
+    db.session.add(console)
+    db.session.commit()
+
+    response_body = {
+        "message": "New Console created"
+    }
+    return jsonify(response_body), 200
+
+@api.route('/console/<int:console_id>', methods=['PUT'])
+def update_console(console_id):
+
+    console = Console.query.filter_by(id=console_id).first()
+    body = request.get_json()
+    if console is None:
+        return jsonify({
+            "error": "Console not found"
+        }), 400 
+    
+    console.name = body.get('name',console.name)
+    console.price = body.get('price',console.price) 
+    
+    db.session.commit()
+
+    return jsonify(console.serialize()), 200
