@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Administrator, Company, Game, CompanyPost, Console, GameConsole
+from api.models import db, User, Administrator, Company, Game, CompanyPost, Console, GameConsole, ConsoleFavorites
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy.orm import joinedload
@@ -533,6 +533,58 @@ def del_game_console(gameconsole_id):
     
     
     db.session.delete(game_console)
+    db.session.commit()
+
+    response_body = {
+        
+            "message": "Successfully deleted"
+        
+    }
+    return jsonify(response_body), 200
+
+# =========================
+# CONSOLE FAVORITES
+# =========================
+
+@api.route('/console/favorites/<int:user_id>/<int:console_id>', methods=['POST'])
+def add_favorite_console(user_id, console_id):
+
+    exists = ConsoleFavorites.query.filter_by(user_id=user_id, console_id=console_id).first()
+    
+    if exists:
+        return jsonify({"error": "This console is already assigned to your favorites"}), 400
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": f"Game {user_id} not found"}), 404
+    
+    console = Console.query.get(console_id)
+    if not console:
+        return jsonify({"error": f"Console {console_id} not found"}), 404
+
+    console_favorite = ConsoleFavorites(user_id=user_id, console_id=console_id)
+    
+    db.session.add(console_favorite)
+    db.session.commit()
+
+    response_body = {
+        
+            "message": "Success",
+            "added": console_favorite.serialize()
+        
+    }
+    return jsonify(response_body), 200
+
+
+@api.route('/console/favorites/<int:consolefavorites_id>', methods=['DELETE'])
+def del_console_favorite(consolefavorites_id):
+
+    console_favorites = db.session.get(ConsoleFavorites, consolefavorites_id)
+    if not console_favorites:
+        return jsonify({"error": f"Console {consolefavorites_id} in your favorites not found"}), 404
+    
+    
+    db.session.delete(console_favorites)
     db.session.commit()
 
     response_body = {
