@@ -2,9 +2,10 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Administrator, Company, Game, CompanyPost, Console
+from api.models import db, User, Administrator, Company, Game, CompanyPost, Console, GameConsole
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
+from sqlalchemy.orm import joinedload
 
 api = Blueprint('api', __name__)
 
@@ -477,3 +478,66 @@ def update_console(console_id):
     db.session.commit()
 
     return jsonify(console.serialize()), 200
+
+# =========================
+# GAME-CONSOLE
+# =========================
+
+@api.route('/gameconsole', methods=['GET'])
+def get_gameconsoles():
+
+    all_gameconsoles = db.session.query(GameConsole).options(
+        joinedload(GameConsole.game),
+        joinedload(GameConsole.console)
+    ).all()
+
+    results = list(map(lambda gameconsole: gameconsole.serialize(), all_gameconsoles))
+
+    return jsonify(results), 200
+
+@api.route('/gameconsole/<int:game_id>/<int:console_id>', methods=['POST'])
+def add_game_console(game_id, console_id):
+
+    exists = GameConsole.query.filter_by(game_id=game_id, console_id=console_id).first()
+    
+    if exists:
+        return jsonify({"error": "This game is already assigned to this console"}), 400
+
+    game = Game.query.get(game_id)
+    if not game:
+        return jsonify({"error": f"Game {game_id} not found"}), 404
+    
+    console = Console.query.get(console_id)
+    if not console:
+        return jsonify({"error": f"Console {console_id} not found"}), 404
+
+    game_console = GameConsole(game_id=game_id, console_id=console_id)
+    
+    db.session.add(game_console)
+    db.session.commit()
+
+    response_body = {
+        
+            "message": "Success",
+            "added": game_console.serialize()
+        
+    }
+    return jsonify(response_body), 200
+
+@api.route('/gameconsole/<int:gameconsole_id>', methods=['DELETE'])
+def del_game_console(gameconsole_id):
+
+    game_console = db.session.get(GameConsole, gameconsole_id)
+    if not game_console:
+        return jsonify({"error": f"Game in console {gameconsole_id} not found"}), 404
+    
+    
+    db.session.delete(game_console)
+    db.session.commit()
+
+    response_body = {
+        
+            "message": "Successfully deleted"
+        
+    }
+    return jsonify(response_body), 200

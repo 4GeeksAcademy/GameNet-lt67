@@ -38,6 +38,8 @@ import Console from "./pages/Consoles/Console";
 import Consoles from "./pages/Consoles/Consoles";
 import NewConsole from "./pages/Consoles/NewConsole";
 import UpdateConsole from "./pages/Consoles/UpdateConsole";
+import GameConsole from "./pages/GameConsole/GameConsole";
+import GameConsoleList from "./pages/GameConsole/GameConsoleList";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -91,6 +93,10 @@ export const router = createBrowserRouter(
         <Route path="/new_console" element={<NewConsole />} />
         <Route path="/update_console/:consoleId" element={<UpdateConsole />} />
         <Route path="/console/:consoleId" element={ <Console />} />
+
+        {/* GameConsole */}
+        <Route path="/gameconsole" element={<GameConsole />} />
+        <Route path="/gameconsolelist" element={<GameConsoleList />} />
       </Route>
     )
 );

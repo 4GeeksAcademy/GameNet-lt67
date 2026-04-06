@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, ForeignKey, Integer, BigInteger
+from sqlalchemy import String, Boolean, ForeignKey, Integer, BigInteger, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
@@ -93,6 +93,7 @@ class Game(db.Model):
     cover_img: Mapped[str] = mapped_column(String(250))
 
     company = relationship("Company", back_populates="game")
+    gameconsole = relationship("GameConsole", back_populates="game")
 
     def serialize(self):
         return {
@@ -113,7 +114,7 @@ class Console(db.Model):
     name: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     price: Mapped[str] = mapped_column(String(120))
 
-    
+    gameconsole = relationship("GameConsole", back_populates="console")
 
 
     def serialize(self):
@@ -121,5 +122,25 @@ class Console(db.Model):
             "id": self.id,
             "name": self.name,
             "price": self.price
+            # do not serialize the password, its a security breach
+        }
+
+class GameConsole(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    game_id: Mapped[int] = mapped_column(ForeignKey("game.id"), nullable=False)
+    console_id: Mapped[int] = mapped_column(ForeignKey("console.id"), nullable=False)
+
+    __table_args__ = (UniqueConstraint('game_id', 'console_id', name='_game_console_uc'),)
+
+    game = relationship("Game", back_populates="gameconsole")
+    console = relationship("Console", back_populates="gameconsole")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "game_id": self.game_id,
+            "console_id": self.console_id,
+            "game_name": self.game.name if self.game else "Unknown Game",
+            "console_name": self.console.name if self.console else "Unknown Console"
             # do not serialize the password, its a security breach
         }
