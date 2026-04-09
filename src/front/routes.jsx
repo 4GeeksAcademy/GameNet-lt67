@@ -42,6 +42,8 @@ import GameConsole from "./pages/GameConsole/GameConsole";
 import GameConsoleList from "./pages/GameConsole/GameConsoleList";
 import ConsoleFavoritesList from "./pages/ConsoleFavorites/ConsoleFavoritesList";
 import ConsoleFavorites from "./pages/ConsoleFavorites/ConsoleFavorites";
+import GameFavoriteList from "./pages/GameFavorites/GameFavoritesList";
+import GameFavorites from "./pages/GameFavorites/GameFavorites";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -103,6 +105,10 @@ export const router = createBrowserRouter(
         {/* ConsoleFavorites */}
         <Route path="/console/favorites" element={<ConsoleFavorites />} />
         <Route path="/console/favorites/:userId" element={<ConsoleFavoritesList />} />
+
+        {/* GameFavorites */}
+        <Route path="/game/favorites" element={<GameFavorites />} />
+        <Route path="/game/favorites/:userId" element={<GameFavoriteList />} />
       </Route>
     )
 );
