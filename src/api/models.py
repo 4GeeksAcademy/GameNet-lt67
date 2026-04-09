@@ -27,6 +27,7 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(nullable=False)
     
     consolefavorites = relationship("ConsoleFavorites", back_populates="user")
+    gamefavorites = relationship("GameFavorites", back_populates="user")
 
     def serialize(self):
         return {
@@ -94,6 +95,7 @@ class Game(db.Model):
 
     company = relationship("Company", back_populates="game")
     gameconsole = relationship("GameConsole", back_populates="game")
+    gamefavorites = relationship("GameFavorites", back_populates="game")
 
     def serialize(self):
         return {
@@ -163,5 +165,26 @@ class ConsoleFavorites(db.Model):
             "console_id": self.console_id,
             "user_name": self.user.nickname if self.user else "Unknown User",
             "console_name": self.console.name if self.console else "Unknown Console"
+            # do not serialize the password, its a security breach
+        }
+    
+
+class GameFavorites(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
+    game_id: Mapped[int] = mapped_column(ForeignKey("game.id"), nullable=False)
+
+    __table_args__ = (UniqueConstraint('user_id', 'game_id', name='_user_game_uc'),)
+
+    user = relationship("User", back_populates="gamefavorites")
+    game = relationship("Game", back_populates="gamefavorites")
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "game_id": self.game_id,
+            "user_name": self.user.nickname if self.user else "Unknown User",
+            "game_name": self.game.name if self.game else "Unknown Game"
             # do not serialize the password, its a security breach
         }

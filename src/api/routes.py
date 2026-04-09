@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Administrator, Company, Game, CompanyPost, Console, GameConsole, ConsoleFavorites
+from api.models import db, User, Administrator, Company, Game, CompanyPost, Console, GameConsole, ConsoleFavorites, GameFavorites
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy.orm import joinedload
@@ -598,6 +598,74 @@ def add_favorite_console(user_id, console_id):
 def del_console_favorite(user_id, consolefavorites_id):
 
     favorite = db.session.get(ConsoleFavorites, consolefavorites_id)
+
+    if not favorite:
+        return jsonify({"error": "Favorite not found"}), 404
+
+    if favorite.user_id != user_id:
+        return jsonify({"error": "You are not authorized to delete this favorite"}), 403
+
+    db.session.delete(favorite)
+    db.session.commit()
+
+    return jsonify({"message": "Successfully deleted from your favorites"}), 200
+
+
+# =========================
+# GAME FAVORITES
+# =========================
+
+@api.route('/game/favorites/<int:user_id>', methods=['GET'])
+def get_game_favorites(user_id):
+
+    user_favorites = db.session.query(GameFavorites).filter(
+        GameFavorites.user_id == user_id
+    ).options(
+        joinedload(GameFavorites.user),
+        joinedload(GameFavorites.game)
+    ).all()
+
+    if not user_favorites:
+        return jsonify({"msg": "No se encontraron favoritos para este usuario"}), 404
+
+    results = list(map(lambda gamefavorites: gamefavorites.serialize(), user_favorites))
+
+    return jsonify(results), 200
+
+@api.route('/game/favorites/<int:user_id>/<int:game_id>', methods=['POST'])
+def add_favorite_game(user_id, game_id):
+
+    exists = GameFavorites.query.filter_by(user_id=user_id, game_id=game_id).first()
+    
+    if exists:
+        return jsonify({"error": "This game is already assigned to your favorites"}), 400
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": f"Game {user_id} not found"}), 404
+    
+    game = Game.query.get(game_id)
+    if not game:
+        return jsonify({"error": f"Game {game_id} not found"}), 404
+
+    game_favorite = GameFavorites(user_id=user_id, game_id=game_id)
+    
+    db.session.add(game_favorite)
+    db.session.commit()
+
+    response_body = {
+        
+            "message": "Success",
+            "added": game_favorite.serialize()
+        
+    }
+    return jsonify(response_body), 200
+
+
+@api.route('/game/favorites/<int:user_id>/<int:gamefavorites_id>', methods=['DELETE'])
+def del_game_favorite(user_id, gamefavorites_id):
+
+    favorite = db.session.get(GameFavorites, gamefavorites_id)
 
     if not favorite:
         return jsonify({"error": "Favorite not found"}), 404
