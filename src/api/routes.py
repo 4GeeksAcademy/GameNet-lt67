@@ -6,6 +6,7 @@ from api.models import db, User, Administrator, Company, Game, CompanyPost, Cons
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy.orm import joinedload
+from flask_jwt_extended import create_access_token
 
 api = Blueprint('api', __name__)
 
@@ -546,6 +547,23 @@ def del_game_console(gameconsole_id):
 # CONSOLE FAVORITES
 # =========================
 
+@api.route('/console/favorites/<int:user_id>', methods=['GET'])
+def get_console_favorites(user_id):
+
+    user_favorites = db.session.query(ConsoleFavorites).filter(
+        ConsoleFavorites.user_id == user_id
+    ).options(
+        joinedload(ConsoleFavorites.user),
+        joinedload(ConsoleFavorites.console)
+    ).all()
+
+    if not user_favorites:
+        return jsonify({"msg": "No se encontraron favoritos para este usuario"}), 404
+
+    results = list(map(lambda consolefavorites: consolefavorites.serialize(), user_favorites))
+
+    return jsonify(results), 200
+
 @api.route('/console/favorites/<int:user_id>/<int:console_id>', methods=['POST'])
 def add_favorite_console(user_id, console_id):
 
@@ -576,20 +594,56 @@ def add_favorite_console(user_id, console_id):
     return jsonify(response_body), 200
 
 
-@api.route('/console/favorites/<int:consolefavorites_id>', methods=['DELETE'])
-def del_console_favorite(consolefavorites_id):
+@api.route('/console/favorites/<int:user_id>/<int:consolefavorites_id>', methods=['DELETE'])
+def del_console_favorite(user_id, consolefavorites_id):
 
-    console_favorites = db.session.get(ConsoleFavorites, consolefavorites_id)
-    if not console_favorites:
-        return jsonify({"error": f"Console {consolefavorites_id} in your favorites not found"}), 404
-    
-    
-    db.session.delete(console_favorites)
+    favorite = db.session.get(ConsoleFavorites, consolefavorites_id)
+
+    if not favorite:
+        return jsonify({"error": "Favorite not found"}), 404
+
+    if favorite.user_id != user_id:
+        return jsonify({"error": "You are not authorized to delete this favorite"}), 403
+
+    db.session.delete(favorite)
     db.session.commit()
 
+    return jsonify({"message": "Successfully deleted from your favorites"}), 200
+
+
+# =========================
+# USER LOGIN
+# =========================
+
+@api.route('/user/login', methods=['POST'])
+def login():
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+    user = User.query.filter_by(email=email).first()
+    if user is None:
+        return jsonify({"message": "Bad email or password"}), 401
+    if password != user.password:
+        return jsonify({"message": "Bad email or password"}), 401
+
+    access_token = create_access_token(identity=id)
+    return jsonify(access_token=access_token), 200
+
+# =========================
+# USER SIGN-UP
+# =========================
+
+@api.route('/signup', methods=['POST'])
+def signup():
+    body = request.get_json()
+    user = User.query.filter_by(email=body["email"]).first()
+    if user is not None:
+        return jsonify({"message": "This email already exists"}), 401
+    
+    user = User(**body)
+    db.session.add(user)
+    db.session.commit()
     response_body = {
-        
-            "message": "Successfully deleted"
-        
+        "message": "User created correctly"
     }
-    return jsonify(response_body), 200
+
+    return jsonify(response_body), 201

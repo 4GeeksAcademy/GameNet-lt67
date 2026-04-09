@@ -44,6 +44,7 @@ export const Home = () => {
 			<button className="btn btn-warning" onClick={()=> navigate("/console")}>Consoles</button>
 			<button className="btn btn-warning" onClick={()=> navigate("/gameconsole")}>GameConsole</button>
 			<button className="btn btn-warning" onClick={()=> navigate("/gameconsolelist")}>GameConsoleList</button>
+			<button className="btn btn-warning" onClick={()=> navigate("/console/favorites/list")}>ConsoleFavoritesList</button>
 			<div className="alert alert-info">
 				{store.message ? (
 					<span>{store.message}</span>

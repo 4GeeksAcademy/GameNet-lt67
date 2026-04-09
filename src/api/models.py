@@ -160,6 +160,8 @@ class ConsoleFavorites(db.Model):
         return {
             "id": self.id,
             "user_id": self.user_id,
-            "console_id": self.console_id
+            "console_id": self.console_id,
+            "user_name": self.user.nickname if self.user else "Unknown User",
+            "console_name": self.console.name if self.console else "Unknown Console"
             # do not serialize the password, its a security breach
         }

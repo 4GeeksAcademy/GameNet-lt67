@@ -40,6 +40,8 @@ import NewConsole from "./pages/Consoles/NewConsole";
 import UpdateConsole from "./pages/Consoles/UpdateConsole";
 import GameConsole from "./pages/GameConsole/GameConsole";
 import GameConsoleList from "./pages/GameConsole/GameConsoleList";
+import ConsoleFavoritesList from "./pages/ConsoleFavorites/ConsoleFavoritesList";
+import ConsoleFavorites from "./pages/ConsoleFavorites/ConsoleFavorites";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -97,6 +99,10 @@ export const router = createBrowserRouter(
         {/* GameConsole */}
         <Route path="/gameconsole" element={<GameConsole />} />
         <Route path="/gameconsolelist" element={<GameConsoleList />} />
+
+        {/* ConsoleFavorites */}
+        <Route path="/console/favorites" element={<ConsoleFavorites />} />
+        <Route path="/console/favorites/:userId" element={<ConsoleFavoritesList />} />
       </Route>
     )
 );
