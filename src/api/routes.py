@@ -8,6 +8,7 @@ from flask_cors import CORS
 from sqlalchemy.orm import joinedload
 from flask_jwt_extended import create_access_token
 
+
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
@@ -693,7 +694,7 @@ def login():
     if password != user.password:
         return jsonify({"message": "Bad email or password"}), 401
 
-    access_token = create_access_token(identity=id)
+    access_token = create_access_token(identity=user.id)
     return jsonify(access_token=access_token), 200
 
 # =========================
