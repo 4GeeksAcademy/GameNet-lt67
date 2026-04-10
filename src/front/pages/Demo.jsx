@@ -8,6 +8,15 @@ export const Demo = () => {
 
   return (
     <div className="container">
+      <button className="btn btn-warning" onClick={()=> navigate("/administrator")}>Administrators</button>
+			<button className="btn btn-warning" onClick={()=> navigate("/user")}>Users</button>
+			<button className="btn btn-warning" onClick={()=> navigate("/company")}>Companies</button>
+			<button className="btn btn-warning" onClick={()=> navigate("/game")}>Games</button>
+			<button className="btn btn-warning" onClick={()=> navigate("/companypost")}>Company posts</button>
+			<button className="btn btn-warning" onClick={()=> navigate("/console")}>Consoles</button>
+			<button className="btn btn-warning" onClick={()=> navigate("/gameconsole")}>GameConsole</button>
+			<button className="btn btn-warning" onClick={()=> navigate("/gameconsolelist")}>GameConsoleList</button>
+			<button className="btn btn-warning" onClick={()=> navigate("/console/favorites/list")}>ConsoleFavoritesList</button>
       <ul className="list-group">
         {/* Map over the 'todos' array from the store and render each item as a list element */}
         {store && store.todos?.map((item) => {

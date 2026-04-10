@@ -1,7 +1,12 @@
 import React, { useEffect } from "react"
-import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { useNavigate } from "react-router-dom";
+import { PostCard } from "../components/PostCard.jsx";
+import { Sidebar } from "../components/Sidebar.jsx";
+import { Navbar } from "../components/Navbar.jsx";
+import { Sparkles } from 'lucide-react';
+import { mockPosts } from "../data/mockPosts.js";
+
 
 export const Home = () => {
 
@@ -35,25 +40,74 @@ export const Home = () => {
 	}, [])
 
 	return (
-		<div className="text-center mt-5">
-			<button className="btn btn-warning" onClick={()=> navigate("/administrator")}>Administrators</button>
-			<button className="btn btn-warning" onClick={()=> navigate("/user")}>Users</button>
-			<button className="btn btn-warning" onClick={()=> navigate("/company")}>Companies</button>
-			<button className="btn btn-warning" onClick={()=> navigate("/game")}>Games</button>
-			<button className="btn btn-warning" onClick={()=> navigate("/companypost")}>Company posts</button>
-			<button className="btn btn-warning" onClick={()=> navigate("/console")}>Consoles</button>
-			<button className="btn btn-warning" onClick={()=> navigate("/gameconsole")}>GameConsole</button>
-			<button className="btn btn-warning" onClick={()=> navigate("/gameconsolelist")}>GameConsoleList</button>
-			<button className="btn btn-warning" onClick={()=> navigate("/console/favorites/list")}>ConsoleFavoritesList</button>
-			<div className="alert alert-info">
-				{store.message ? (
-					<span>{store.message}</span>
-				) : (
-					<span className="text-danger">
-						Loading message from the backend (make sure your python 🐍 backend is running)...
-					</span>
-				)}
+	<>
+		{store.auth?
+		<div className="main-layout">
+
+			<div className="container py-4">
+				<div className="row g-4">
+
+					{/* Main Feed */}
+					<main className="col-12 col-lg-8">
+						<div className="d-flex flex-column gap-4">
+
+							{/* Welcome Banner */}
+							<div className="welcome-banner p-4 rounded-4 position-relative overflow-hidden">
+								<div className="position-relative z-1">
+									<div className="d-flex align-items-center gap-2 mb-2">
+										<Sparkles className="sparkle-icon" size={20} />
+										<h2 className="h4 fw-bold m-0">Welcome to GameNet</h2>
+									</div>
+									<p className="text-secondary m-0">
+										Stay updated with the latest game releases, updates, and announcements from your favorite gaming companies.
+									</p>
+								</div>
+								{/* Fondo animado sutil */}
+								<div className="banner-overlay"></div>
+							</div>
+
+							{/* Filter Tabs */}
+							<div className="filter-tabs d-flex gap-2 pb-2">
+								<button className="btn btn-gradient">All Posts</button>
+								<button className="btn btn-outline-custom">Releases</button>
+								<button className="btn btn-outline-custom">Updates</button>
+								<button className="btn btn-outline-custom">Events</button>
+								<button className="btn btn-outline-custom">Announcements</button>
+							</div>
+
+							{/* Posts Feed */}
+							<div className="d-flex flex-column gap-4">
+								{mockPosts.map((post) => (
+									<PostCard
+										key={post.id}
+										company={post.company}
+										content={post.content}
+										timestamp={post.timestamp}
+										stats={post.stats}
+									/>
+								))}
+							</div>
+
+							{/* Load More */}
+							<div className="d-flex justify-content-center py-3">
+								<button className="btn btn-load-more">
+									Load More Posts
+								</button>
+							</div>
+						</div>
+					</main>
+
+					{/* Sidebar */}
+					<aside className="col-12 col-lg-4">
+						<div className="sticky-sidebar">
+							<Sidebar />
+						</div>
+					</aside>
+
+				</div>
 			</div>
 		</div>
+		:navigate("/login")}
+	</>
 	);
 }; 

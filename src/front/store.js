@@ -13,7 +13,7 @@ export const initialStore=()=>{
         background: null,
       }
     ],
-    auth: ""
+    auth: false
   }
 }
 
@@ -33,7 +33,7 @@ export default function storeReducer(store, action = {}) {
         ...store,
         todos: store.todos.map((todo) => (todo.id === id ? { ...todo, background: color } : todo))
       };
-      case 'auth':
+      case 'set_auth':
 
 
       return {
