@@ -45,6 +45,9 @@ import ConsoleFavorites from "./pages/ConsoleFavorites/ConsoleFavorites";
 import GameFavoriteList from "./pages/GameFavorites/GameFavoritesList";
 import GameFavorites from "./pages/GameFavorites/GameFavorites";
 import LoginUser from "./pages/UserInterface/LoginUser";
+import SignUpUser from "./pages/UserInterface/SignUpUser";
+import GamesUser from "./pages/UserInterface/GamesUser";
+import GameDetails from "./pages/UserInterface/GameDetails";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -113,6 +116,10 @@ export const router = createBrowserRouter(
 
 
         <Route path="/login" element={<LoginUser />} />
+        <Route path="/signup" element={<SignUpUser />} />
+
+        <Route path="/games" element={<GamesUser />} />
+        <Route path="/game/details/:gameId" element={<GameDetails />} />
       </Route>
     )
 );

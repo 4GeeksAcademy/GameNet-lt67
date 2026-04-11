@@ -11,6 +11,7 @@ from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 # from models import Person
 
@@ -19,8 +20,12 @@ ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../dist/')
 app = Flask(__name__)
-app.config["JWT_SECRET_KEY"] = "clave-secreta-de-gamenet-2026" 
-jwt = JWTManager(app) # <--- Esta es la línea mágica que falta
+CORS(app, resources={r"/api/*": {"origins": "*"}})
+app.config["JWT_TOKEN_LOCATION"] = ["headers"] # Fuerza a buscar en Headers
+app.config["JWT_HEADER_NAME"] = "Authorization"
+app.config["JWT_HEADER_TYPE"] = "Bearer"
+app.config["JWT_SECRET_KEY"] = "gamenet_secret_key" # Debe ser IGUAL a la del Login
+jwt = JWTManager(app)
 app.url_map.strict_slashes = False
 
 # database condiguration
@@ -74,3 +79,24 @@ def serve_any_other_file(path):
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
+
+@jwt.invalid_token_loader
+def invalid_token_callback(error):
+    return jsonify({
+        "message": "Token inválido",
+        "error": error
+    }), 422
+
+@jwt.expired_token_loader
+def expired_token_callback(jwt_header, jwt_data):
+    return jsonify({
+        "message": "El token ha expirado",
+        "error": "token_expired"
+    }), 401
+
+@jwt.unauthorized_loader
+def missing_token_callback(error):
+    return jsonify({
+        "message": "No se encontró el token en los headers",
+        "error": error
+    }), 401

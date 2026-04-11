@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, ForeignKey, Integer, BigInteger, UniqueConstraint
+from sqlalchemy import String, Boolean, ForeignKey, Integer, BigInteger, UniqueConstraint, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 db = SQLAlchemy()
@@ -85,13 +85,13 @@ class CompanyPost(db.Model):
 class Game(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     id_company: Mapped[int] = mapped_column(ForeignKey("company.id"), nullable=False)
-    name: Mapped[str] = mapped_column(String(120))
-    trailer_url: Mapped[str] = mapped_column(String(250))
-    release_date: Mapped[str] = mapped_column(String(250))
-    total_sales: Mapped[int] = mapped_column(BigInteger)
-    current_players: Mapped[int] = mapped_column(BigInteger)
-    description: Mapped[str] = mapped_column(String(250))
-    cover_img: Mapped[str] = mapped_column(String(250))
+    name: Mapped[str] = mapped_column(String(200))
+    trailer_url: Mapped[str] = mapped_column(Text, nullable=True)
+    release_date: Mapped[str] = mapped_column(Text, nullable=True)
+    total_sales: Mapped[int] = mapped_column(BigInteger, default=0)
+    current_players: Mapped[int] = mapped_column(BigInteger, default=0)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    cover_img: Mapped[str] = mapped_column(Text, nullable=True)
 
     company = relationship("Company", back_populates="game")
     gameconsole = relationship("GameConsole", back_populates="game")

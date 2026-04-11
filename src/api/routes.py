@@ -6,7 +6,7 @@ from api.models import db, User, Administrator, Company, Game, CompanyPost, Cons
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy.orm import joinedload
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 
 api = Blueprint('api', __name__)
@@ -634,7 +634,8 @@ def get_game_favorites(user_id):
     return jsonify(results), 200
 
 @api.route('/game/favorites/<int:user_id>/<int:game_id>', methods=['POST'])
-def add_favorite_game(user_id, game_id):
+def add_favorite_game_admin(user_id, game_id):
+
 
     exists = GameFavorites.query.filter_by(user_id=user_id, game_id=game_id).first()
     
@@ -661,6 +662,28 @@ def add_favorite_game(user_id, game_id):
         
     }
     return jsonify(response_body), 200
+
+
+@api.route('/game/favorites/<int:game_id>', methods=['POST', 'DELETE'])
+@jwt_required()
+def toggle_favorite(game_id):
+    user_id = int(get_jwt_identity())
+    
+    # Buscamos si ya existe el favorito
+    favorite = GameFavorites.query.filter_by(user_id=user_id, game_id=game_id).first()
+
+    if request.method == 'DELETE' or (request.method == 'POST' and favorite):
+        if favorite:
+            db.session.delete(favorite)
+            db.session.commit()
+            return jsonify({"message": "Removed from favorites", "action": "removed"}), 200
+        return jsonify({"error": "Favorite not found"}), 404
+
+    # Si es POST y no existe, lo creamos
+    new_fav = GameFavorites(user_id=user_id, game_id=game_id)
+    db.session.add(new_fav)
+    db.session.commit()
+    return jsonify({"message": "Added to favorites", "action": "added"}), 201
 
 
 @api.route('/game/favorites/<int:user_id>/<int:gamefavorites_id>', methods=['DELETE'])
@@ -694,7 +717,7 @@ def login():
     if password != user.password:
         return jsonify({"message": "Bad email or password"}), 401
 
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id))
     return jsonify(access_token=access_token), 200
 
 # =========================
