@@ -3,9 +3,8 @@ import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import { useNavigate } from "react-router-dom";
 import { PostCard } from "../components/PostCard.jsx";
 import { Sidebar } from "../components/Sidebar.jsx";
-import { Navbar } from "../components/Navbar.jsx";
 import { Sparkles } from 'lucide-react';
-import { mockPosts } from "../data/mockPosts.js";
+import { getPosts } from "../actions.js";
 
 
 export const Home = () => {
@@ -36,78 +35,81 @@ export const Home = () => {
 	}
 
 	useEffect(() => {
-		loadMessage()
+		getPosts(dispatch)
 	}, [])
 
 	return (
-	<>
-		{store.auth?
-		<div className="main-layout">
+		<>
+			{store.auth ?
+				<div className="main-layout">
 
-			<div className="container py-4">
-				<div className="row g-4">
+					<div className="container py-4">
+						<div className="row g-4">
 
-					{/* Main Feed */}
-					<main className="col-12 col-lg-8">
-						<div className="d-flex flex-column gap-4">
+							
+							<main className="col-12 col-lg-8">
+								<div className="d-flex flex-column gap-4">
 
-							{/* Welcome Banner */}
-							<div className="welcome-banner p-4 rounded-4 position-relative overflow-hidden">
-								<div className="position-relative z-1">
-									<div className="d-flex align-items-center gap-2 mb-2">
-										<Sparkles className="sparkle-icon" size={20} />
-										<h2 className="h4 fw-bold m-0">Welcome to GameNet</h2>
+									
+									<div className="welcome-banner p-4 rounded-4 position-relative overflow-hidden">
+										<div className="position-relative z-1">
+											<div className="d-flex align-items-center gap-2 mb-2">
+												<Sparkles className="sparkle-icon" size={20} />
+												<h2 className="h4 fw-bold m-0">Welcome to GameNet</h2>
+											</div>
+											<p className="text-secondary m-0">
+												Stay updated with the latest game releases, updates, and announcements from your favorite gaming companies.
+											</p>
+										</div>
+										
+										<div className="banner-overlay"></div>
 									</div>
-									<p className="text-secondary m-0">
-										Stay updated with the latest game releases, updates, and announcements from your favorite gaming companies.
-									</p>
+
+									
+									<div className="filter-tabs d-flex gap-2 pb-2">
+										<button className="btn btn-gradient">All Posts</button>
+										<button className="btn btn-outline-custom">Releases</button>
+										<button className="btn btn-outline-custom">Updates</button>
+										<button className="btn btn-outline-custom">Events</button>
+										<button className="btn btn-outline-custom">Announcements</button>
+									</div>
+
+									
+									<div className="d-flex flex-column gap-4">
+										{store.posts.map((post) => (
+											<PostCard
+												data={post.id}
+												key={post.id}
+												id={post.id} 
+												company={post.company}
+												content={post.content}
+												timestamp={post.timestamp}
+												stats={post.stats}
+												user_liked={post.user_liked} 
+											/>
+										))}
+									</div>
+
+									
+									<div className="d-flex justify-content-center py-3">
+										<button className="btn btn-load-more">
+											Load More Posts
+										</button>
+									</div>
 								</div>
-								{/* Fondo animado sutil */}
-								<div className="banner-overlay"></div>
-							</div>
+							</main>
 
-							{/* Filter Tabs */}
-							<div className="filter-tabs d-flex gap-2 pb-2">
-								<button className="btn btn-gradient">All Posts</button>
-								<button className="btn btn-outline-custom">Releases</button>
-								<button className="btn btn-outline-custom">Updates</button>
-								<button className="btn btn-outline-custom">Events</button>
-								<button className="btn btn-outline-custom">Announcements</button>
-							</div>
+							
+							<aside className="col-12 col-lg-4">
+								<div className="sticky-sidebar">
+									<Sidebar />
+								</div>
+							</aside>
 
-							{/* Posts Feed */}
-							<div className="d-flex flex-column gap-4">
-								{mockPosts.map((post) => (
-									<PostCard
-										key={post.id}
-										company={post.company}
-										content={post.content}
-										timestamp={post.timestamp}
-										stats={post.stats}
-									/>
-								))}
-							</div>
-
-							{/* Load More */}
-							<div className="d-flex justify-content-center py-3">
-								<button className="btn btn-load-more">
-									Load More Posts
-								</button>
-							</div>
 						</div>
-					</main>
-
-					{/* Sidebar */}
-					<aside className="col-12 col-lg-4">
-						<div className="sticky-sidebar">
-							<Sidebar />
-						</div>
-					</aside>
-
+					</div>
 				</div>
-			</div>
-		</div>
-		:navigate("/login")}
-	</>
+				: navigate("/login")}
+		</>
 	);
 }; 

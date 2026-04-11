@@ -625,3 +625,267 @@ body {
     justify-content: space-between;
     height: 100%; /* Obliga a la card a estirarse al alto máximo de la fila */
 }
+
+
+/* Estilos para el menú desplegable */
+.user-dropdown-menu {
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.dropdown-item-custom {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 15px;
+    color: #e0e0e0;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    background: transparent;
+    border: none;
+    width: 100%;
+    font-size: 0.9rem;
+}
+
+.dropdown-item-custom:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #00d4ff; /* Color cian neón similar a tu glow */
+}
+
+.dropdown-item-custom.text-danger:hover {
+    color: #ff4b4b;
+    background: rgba(255, 75, 75, 0.05);
+}
+
+.dropdown-divider-custom {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 8px 0;
+}
+
+/* Animación de entrada */
+.animate-fade-in {
+    animation: navFadeIn 0.2s ease-out;
+}
+
+@keyframes navFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+
+.profile-card {
+    background: linear-gradient(145deg, #151515, #1a1a1a) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.icon-badge {
+    width: 70px;
+    height: 70px;
+    background: rgba(0, 212, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-group-custom {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    color: #6c757d;
+}
+
+.form-control-custom {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 12px 15px 12px 45px;
+    border-radius: 10px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.form-control-custom:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #00d4ff;
+    outline: none;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+}
+
+.btn-update-profile {
+    background: #00d4ff;
+    color: black;
+    border: none;
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-update-profile:hover {
+    background: #00b8e6;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 212, 255, 0.4);
+}
+
+
+
+.game-card-custom {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.game-card-custom:hover {
+    transform: translateY(-5px);
+    border-color: #007bff; 
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
+}
+
+
+.game-title {
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.5px;
+}
+
+
+.btn-remove {
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+.btn-remove:hover {
+    background: #dc3545;
+    color: white;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.4);
+}
+
+.favorites-container {
+    background: linear-gradient(145deg, #0f0f0f 0%, #1a1a1a 100%);
+    min-height: 80vh;
+    border-radius: 20px;
+    border: 1px solid #222;
+}
+
+
+/* Contenedor de la imagen para efecto zoom */
+.game-card-custom .position-relative {
+    overflow: hidden;
+}
+
+.game-card-custom img {
+    transition: transform 0.4s ease;
+}
+
+.game-card-custom:hover img {
+    transform: scale(1.1);
+}
+
+/* Overlay que aparece al hacer hover sobre la imagen */
+.image-overlay-info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 123, 255, 0.4); /* Color azul con transparencia */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.game-card-custom:hover .image-overlay-info {
+    opacity: 1;
+}
+
+
+
+
+.text-decoration-none {
+    text-decoration: none !important;
+}
+
+
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+.search-results-overlay {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    right: 0;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 12px;
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 8px;
+}
+
+.search-result-item {
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.search-result-item:hover {
+    background-color: rgba(0, 219, 222, 0.1);
+}
+
+.result-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.result-name {
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.result-category {
+    font-size: 0.7rem;
+    color: #888;
+}
+
+
+.search-results-overlay::-webkit-scrollbar {
+    width: 5px;
+}
+.search-results-overlay::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 10px;
+}

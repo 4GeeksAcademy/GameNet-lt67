@@ -28,6 +28,7 @@ function CompanyPost (){
             <h1>Post Details</h1>
             <ul>
                 <li>Company ID: {companyPost.id_company}</li>
+                <li>Content Type: {companyPost.message}</li>
                 <li>Message: {companyPost.message}</li>
                 <li>Image: {companyPost.image}</li>
                 <li>Post Date: {companyPost.post_date}</li>
