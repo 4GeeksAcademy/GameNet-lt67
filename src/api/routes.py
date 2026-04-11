@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Administrator, Company, Game, CompanyPost, Console, GameConsole, ConsoleFavorites, GameFavorites
+from api.models import db, User, Administrator, Company, Game, CompanyPost, Console, GameConsole, ConsoleFavorites, GameFavorites, PostLike, PostComment
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy.orm import joinedload
@@ -37,6 +37,7 @@ def get_administrators():
 
     return jsonify(results), 200
 
+
 @api.route('/administrator/<int:admin_id>', methods=['GET'])
 def get_administrator(admin_id):
 
@@ -44,7 +45,7 @@ def get_administrator(admin_id):
     if admin is None:
         return jsonify({
             "error": "Admin not found"
-        }), 400 
+        }), 400
 
     return jsonify(admin.serialize()), 200
 
@@ -56,24 +57,25 @@ def delete_administrator(admin_id):
     if admin is None:
         return jsonify({
             "error": "Admin not found"
-        }), 400 
-    
+        }), 400
+
     db.session.delete(admin)
     db.session.commit()
 
     return jsonify({"message": "Admin " + admin.name + " deleted succesfully."}), 200
+
 
 @api.route('/administrator', methods=['POST'])
 def create_admin():
 
     body = request.get_json()
     admin = Administrator.query.filter_by(email=body['email']).first()
-    
+
     if admin:
         return jsonify({
             "error": "This email already exists"
         }), 401
-    
+
     admin = Administrator(**body)
     db.session.add(admin)
     db.session.commit()
@@ -83,6 +85,7 @@ def create_admin():
     }
     return jsonify(response_body), 200
 
+
 @api.route('/administrator/<int:admin_id>', methods=['PUT'])
 def update_administrator(admin_id):
 
@@ -91,11 +94,11 @@ def update_administrator(admin_id):
     if admin is None:
         return jsonify({
             "error": "Admin not found"
-        }), 400 
-    
-    admin.name = body.get('name',admin.name)
-    admin.email = body.get('email',admin.email) 
-    
+        }), 400
+
+    admin.name = body.get('name', admin.name)
+    admin.email = body.get('email', admin.email)
+
     db.session.commit()
 
     return jsonify(admin.serialize()), 200
@@ -103,6 +106,7 @@ def update_administrator(admin_id):
 # =========================
 # CRUD USER
 # =========================
+
 
 @api.route('/user', methods=['GET'])
 def get_users():
@@ -112,6 +116,7 @@ def get_users():
 
     return jsonify(results), 200
 
+
 @api.route('/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
 
@@ -119,7 +124,64 @@ def get_user(user_id):
     if user is None:
         return jsonify({
             "error": "User not found"
-        }), 400 
+        }), 400
+
+    return jsonify(user.serialize()), 200
+
+
+@api.route('/user/<int:user_id>/likes', methods=['GET'])
+def get_user_likes(user_id):
+    likes = PostLike.query.filter_by(user_id=user_id).all()
+
+    results = [like.post.serialize() for like in likes if like.post]
+
+    return jsonify(results), 200
+
+
+@api.route('/post/<int:post_id>/like/<int:user_id>', methods=['DELETE'])
+def remove_like(post_id, user_id):
+    like = PostLike.query.filter_by(user_id=user_id, post_id=post_id).first()
+    if not like:
+        return jsonify({"msg": "Like not found"}), 404
+    try:
+        db.session.delete(like)
+        db.session.commit()
+        return jsonify({"msg": "Like removed successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"msg": "Error removing like", "error": str(e)}), 500
+
+
+@api.route('/user/<int:user_id>/comments', methods=['GET'])
+def get_user_comments(user_id):
+
+    comments = PostComment.query.filter_by(user_id=user_id).all()
+
+    if not comments:
+        return jsonify([]), 200
+
+    results = []
+    for comment in comments:
+        comment_data = comment.serialize()
+
+        if comment.post:
+            comment_data["post_company"] = comment.post.company.name if comment.post.company else "GameNet Post"
+            comment_data["post_id"] = comment.post.id
+
+        results.append(comment_data)
+
+    return jsonify(results), 200
+
+
+@api.route('/me', methods=['GET'])
+@jwt_required()
+def get_current_user():
+
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
 
     return jsonify(user.serialize()), 200
 
@@ -131,24 +193,25 @@ def delete_user(user_id):
     if user is None:
         return jsonify({
             "error": "User not found"
-        }), 400 
-    
+        }), 400
+
     db.session.delete(user)
     db.session.commit()
 
     return jsonify({"message": "User " + user.name + " deleted succesfully."}), 200
+
 
 @api.route('/user', methods=['POST'])
 def create_user():
 
     body = request.get_json()
     user = User.query.filter_by(email=body['email']).first()
-    
+
     if user:
         return jsonify({
             "error": "This email already exists"
         }), 401
-    
+
     user = User(**body)
     db.session.add(user)
     db.session.commit()
@@ -158,6 +221,7 @@ def create_user():
     }
     return jsonify(response_body), 200
 
+
 @api.route('/user/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
 
@@ -166,11 +230,11 @@ def update_user(user_id):
     if user is None:
         return jsonify({
             "error": "User not found"
-        }), 400 
-    
-    user.nickname = body.get('nickname',user.nickname)
-    user.email = body.get('email',user.email) 
-    
+        }), 400
+
+    user.nickname = body.get('nickname', user.nickname)
+    user.email = body.get('email', user.email)
+
     db.session.commit()
 
     return jsonify(user.serialize()), 200
@@ -178,6 +242,7 @@ def update_user(user_id):
 # =========================
 # CRUD COMPANY
 # =========================
+
 
 @api.route('/company', methods=['GET'])
 def get_companies():
@@ -187,6 +252,7 @@ def get_companies():
 
     return jsonify(results), 200
 
+
 @api.route('/company/<int:company_id>', methods=['GET'])
 def get_company(company_id):
 
@@ -194,7 +260,7 @@ def get_company(company_id):
     if company is None:
         return jsonify({
             "error": "Company not found"
-        }), 400 
+        }), 400
 
     return jsonify(company.serialize()), 200
 
@@ -206,24 +272,25 @@ def delete_company(company_id):
     if company is None:
         return jsonify({
             "error": "Company not found"
-        }), 400 
-    
+        }), 400
+
     db.session.delete(company)
     db.session.commit()
 
     return jsonify({"message": "Company " + company.name + " deleted succesfully."}), 200
+
 
 @api.route('/company', methods=['POST'])
 def create_company():
 
     body = request.get_json()
     company = Company.query.filter_by(email=body['email']).first()
-    
+
     if company:
         return jsonify({
             "error": "This email already exists"
         }), 401
-    
+
     company = Company(**body)
     db.session.add(company)
     db.session.commit()
@@ -233,6 +300,7 @@ def create_company():
     }
     return jsonify(response_body), 200
 
+
 @api.route('/company/<int:company_id>', methods=['PUT'])
 def update_company(company_id):
 
@@ -241,15 +309,15 @@ def update_company(company_id):
     if company is None:
         return jsonify({
             "error": "Company not found"
-        }), 400 
-    
-    company.name = body.get('name',company.name)
-    company.email = body.get('email',company.email)
-    company.description = body.get('description',company.description)
-    company.website_url = body.get('website_url',company.website_url) 
-    company.logo_img = body.get('logo_img',company.logo_img)
-    company.banner_img = body.get('banner_img',company.banner_img)  
-    
+        }), 400
+
+    company.name = body.get('name', company.name)
+    company.email = body.get('email', company.email)
+    company.description = body.get('description', company.description)
+    company.website_url = body.get('website_url', company.website_url)
+    company.logo_img = body.get('logo_img', company.logo_img)
+    company.banner_img = body.get('banner_img', company.banner_img)
+
     db.session.commit()
 
     return jsonify(company.serialize()), 200
@@ -257,6 +325,7 @@ def update_company(company_id):
 # =========================
 # CRUD GAME
 # =========================
+
 
 @api.route('/game', methods=['GET'])
 def get_games():
@@ -266,6 +335,7 @@ def get_games():
 
     return jsonify(results), 200
 
+
 @api.route('/game/<int:game_id>', methods=['GET'])
 def get_game(game_id):
 
@@ -273,7 +343,7 @@ def get_game(game_id):
     if game is None:
         return jsonify({
             "error": "Game not found"
-        }), 400 
+        }), 400
 
     return jsonify(game.serialize()), 200
 
@@ -285,24 +355,25 @@ def delete_game(game_id):
     if game is None:
         return jsonify({
             "error": "Game not found"
-        }), 400 
-    
+        }), 400
+
     db.session.delete(game)
     db.session.commit()
 
     return jsonify({"message": "Game " + game.name + " deleted succesfully."}), 200
+
 
 @api.route('/game', methods=['POST'])
 def create_game():
 
     body = request.get_json()
     game = Game.query.filter_by(name=body['name']).first()
-    
+
     if game:
         return jsonify({
             "error": "This game already exists"
         }), 401
-    
+
     game = Game(**body)
     db.session.add(game)
     db.session.commit()
@@ -312,6 +383,7 @@ def create_game():
     }
     return jsonify(response_body), 200
 
+
 @api.route('/game/<int:game_id>', methods=['PUT'])
 def update_game(game_id):
 
@@ -320,16 +392,16 @@ def update_game(game_id):
     if game is None:
         return jsonify({
             "error": "Game not found"
-        }), 400 
-    
-    game.name = body.get('name',game.name)
-    game.trailer_url = body.get('trailer_url',game.trailer_url)
-    game.release_date = body.get('release_date',game.release_date)
-    game.total_sales = body.get('total_sales',game.total_sales) 
-    game.current_players = body.get('current_players',game.current_players)
-    game.description = body.get('description',game.description)
-    game.cover_img = body.get('cover_img',game.cover_img)  
-    
+        }), 400
+
+    game.name = body.get('name', game.name)
+    game.trailer_url = body.get('trailer_url', game.trailer_url)
+    game.release_date = body.get('release_date', game.release_date)
+    game.total_sales = body.get('total_sales', game.total_sales)
+    game.current_players = body.get('current_players', game.current_players)
+    game.description = body.get('description', game.description)
+    game.cover_img = body.get('cover_img', game.cover_img)
+
     db.session.commit()
 
     return jsonify(game.serialize()), 200
@@ -339,76 +411,202 @@ def update_game(game_id):
 # CRUD COMPANY POST
 # =========================
 
-@api.route('/companypost', methods=['GET'])
-def get_companyposts():
+@api.route('/posts', methods=['GET'])
+def get_all_posts():
 
-    all_company_posts = CompanyPost.query.all()
-    results = list(map(lambda post: post.serialize(), all_company_posts))
+    posts = CompanyPost.query.order_by(CompanyPost.post_date.desc()).all()
+
+    results = [post.serialize() for post in posts]
 
     return jsonify(results), 200
 
-@api.route('/companypost/<int:companypost_id>', methods=['GET'])
-def get_companypost(companypost_id):
+
+@api.route('/post/<int:companypost_id>', methods=['GET'])
+@jwt_required(optional=True)
+def get_post(companypost_id):
+
+    companypost = CompanyPost.query.get(companypost_id)
+
+    user_id = int(get_jwt_identity())
+
+    user_liked = False
+    if user_id:
+
+        user_liked = any(like.user_id == int(user_id)
+                         for like in companypost.likes)
+
+    response = companypost.serialize()
+    response["user_liked"] = user_liked
+
+    return jsonify(response), 200
+
+
+@api.route('/post/<int:companypost_id>', methods=['DELETE'])
+def delete_post(companypost_id):
 
     companypost = CompanyPost.query.filter_by(id=companypost_id).first()
     if companypost is None:
         return jsonify({
             "error": "Company Post not found"
-        }), 400 
+        }), 400
 
-    return jsonify(companypost.serialize()), 200
-
-
-@api.route('/companypost/<int:companypost_id>', methods=['DELETE'])
-def delete_companypost(companypost_id):
-
-    companypost = CompanyPost.query.filter_by(id=companypost_id).first()
-    if companypost is None:
-        return jsonify({
-            "error": "Company Post not found"
-        }), 400 
-    
     db.session.delete(companypost)
     db.session.commit()
 
-    return jsonify({"message": "Company Post " + companypost.name + " deleted succesfully."}), 200
+    return jsonify({"message": "Company Post " + companypost.id + " deleted succesfully."}), 200
 
-@api.route('/companypost', methods=['POST'])
-def create_companypost():
 
+@api.route('/posts', methods=['POST'])
+def create_post():
     body = request.get_json()
-    
-   
-    companypost = CompanyPost(**body)
-    db.session.add(companypost)
+
+    if not body or "message" not in body or "id_company" not in body:
+        return jsonify({"msg": "Missing message or company ID"}), 400
+
+    new_post = CompanyPost(
+        id_company=body['id_company'],
+        message=body['message'],
+        image=body.get('image'),
+        content_type=body.get('content_type', 'announcement')
+    )
+
+    db.session.add(new_post)
+    try:
+        db.session.commit()
+        return jsonify(new_post.serialize()), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"msg": str(e)}), 500
+
+
+@api.route('/post/<int:post_id>/like', methods=['POST'])
+@jwt_required()
+def handle_like(post_id):
+    user_id = int(get_jwt_identity())
+
+    existing_like = PostLike.query.filter_by(
+        user_id=user_id, post_id=post_id).first()
+
+    if existing_like:
+        db.session.delete(existing_like)
+        db.session.commit()
+        return jsonify({"msg": "Like removed", "liked": False}), 200
+
+    new_like = PostLike(user_id=user_id, post_id=post_id)
+    db.session.add(new_like)
     db.session.commit()
 
-    response_body = {
-        "message": "New Company Post created"
-    }
-    return jsonify(response_body), 200
+    return jsonify({"msg": "Post liked", "liked": True}), 201
 
-@api.route('/companypost/<int:companypost_id>', methods=['PUT'])
-def update_companypost(companypost_id):
+
+@api.route('/post/<int:companypost_id>', methods=['PUT'])
+def update_post(companypost_id):
 
     companypost = CompanyPost.query.filter_by(id=companypost_id).first()
     body = request.get_json()
     if companypost is None:
         return jsonify({
             "error": "Company Post not found"
-        }), 400 
-    
-    companypost.message = body.get('message',companypost.message)
-    companypost.image = body.get('image',companypost.image)
-    companypost.post_date = body.get('post_date',companypost.post_date)
-    
+        }), 400
+
+    companypost.message = body.get('message', companypost.message)
+    companypost.image = body.get('image', companypost.image)
+    companypost.post_date = body.get('post_date', companypost.post_date)
+
     db.session.commit()
 
     return jsonify(companypost.serialize()), 200
 
+
+@api.route('/post/<int:post_id>/comments', methods=['GET'])
+def get_comments(post_id):
+
+    comments = PostComment.query.filter_by(post_id=post_id).all()
+    results = [comment.serialize() for comment in comments]
+
+    return jsonify(results), 200
+
+
+@api.route('/posts/latest', methods=['GET'])
+def get_latest_post():
+
+    latest_post = CompanyPost.query.order_by(
+        CompanyPost.post_date.desc()).first()
+
+    if not latest_post:
+        return jsonify({"msg": "No posts found"}), 404
+
+    return jsonify(latest_post.serialize()), 200
+
+
+@api.route('/post/<int:post_id>/share', methods=['POST'])
+def increment_share(post_id):
+    post = CompanyPost.query.get(post_id)
+
+    if not post:
+        return jsonify({"error": "Post not found"}), 404
+
+    post.shares = (post.shares or 0) + 1
+
+    try:
+        db.session.commit()
+        return jsonify(post.serialize()), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+# =========================
+# POST LIKE AND COMMENTS
+# =========================
+
+
+@api.route('/post/<int:post_id>/comment', methods=['POST'])
+@jwt_required()
+def add_comment(post_id):
+    user_id = int(get_jwt_identity())
+    body = request.get_json()
+
+    if not body or "text" not in body:
+        return jsonify({"msg": "Comment text is required"}), 400
+
+    new_comment = PostComment(
+        text=body['text'],
+        user_id=user_id,
+        post_id=post_id
+    )
+
+    db.session.add(new_comment)
+    db.session.commit()
+
+    return jsonify({"msg": "Comment added successfully"}), 201
+
+
+@api.route('/feed', methods=['GET'])
+@jwt_required(optional=True)
+def get_game_feed():
+
+    identity = get_jwt_identity()
+    user_id = int(identity) if identity is not None else None
+
+    posts = CompanyPost.query.order_by(CompanyPost.post_date.desc()).all()
+
+    response_body = []
+    for post in posts:
+        post_data = post.serialize()
+
+        is_liked = False
+        if user_id:
+            is_liked = PostLike.query.filter_by(
+                user_id=user_id, post_id=post.id).first() is not None
+
+        post_data["user_liked"] = is_liked
+        response_body.append(post_data)
+
+    return jsonify(response_body), 200
 # =========================
 # CRUD CONSOLE
 # =========================
+
 
 @api.route('/console', methods=['GET'])
 def get_consoles():
@@ -418,6 +616,7 @@ def get_consoles():
 
     return jsonify(results), 200
 
+
 @api.route('/console/<int:console_id>', methods=['GET'])
 def get_console(console_id):
 
@@ -425,7 +624,7 @@ def get_console(console_id):
     if console is None:
         return jsonify({
             "error": "Console not found"
-        }), 400 
+        }), 400
 
     return jsonify(console.serialize()), 200
 
@@ -437,24 +636,25 @@ def delete_console(console_id):
     if console is None:
         return jsonify({
             "error": "Console not found"
-        }), 400 
-    
+        }), 400
+
     db.session.delete(console)
     db.session.commit()
 
     return jsonify({"message": "Console " + console.name + " deleted succesfully."}), 200
+
 
 @api.route('/console', methods=['POST'])
 def create_console():
 
     body = request.get_json()
     console = Console.query.filter_by(name=body['name']).first()
-    
+
     if console:
         return jsonify({
             "error": "This Console already exists"
         }), 401
-    
+
     console = Console(**body)
     db.session.add(console)
     db.session.commit()
@@ -464,6 +664,7 @@ def create_console():
     }
     return jsonify(response_body), 200
 
+
 @api.route('/console/<int:console_id>', methods=['PUT'])
 def update_console(console_id):
 
@@ -472,11 +673,11 @@ def update_console(console_id):
     if console is None:
         return jsonify({
             "error": "Console not found"
-        }), 400 
-    
-    console.name = body.get('name',console.name)
-    console.price = body.get('price',console.price) 
-    
+        }), 400
+
+    console.name = body.get('name', console.name)
+    console.price = body.get('price', console.price)
+
     db.session.commit()
 
     return jsonify(console.serialize()), 200
@@ -484,6 +685,7 @@ def update_console(console_id):
 # =========================
 # GAME-CONSOLE
 # =========================
+
 
 @api.route('/gameconsole', methods=['GET'])
 def get_gameconsoles():
@@ -493,38 +695,42 @@ def get_gameconsoles():
         joinedload(GameConsole.console)
     ).all()
 
-    results = list(map(lambda gameconsole: gameconsole.serialize(), all_gameconsoles))
+    results = list(
+        map(lambda gameconsole: gameconsole.serialize(), all_gameconsoles))
 
     return jsonify(results), 200
+
 
 @api.route('/gameconsole/<int:game_id>/<int:console_id>', methods=['POST'])
 def add_game_console(game_id, console_id):
 
-    exists = GameConsole.query.filter_by(game_id=game_id, console_id=console_id).first()
-    
+    exists = GameConsole.query.filter_by(
+        game_id=game_id, console_id=console_id).first()
+
     if exists:
         return jsonify({"error": "This game is already assigned to this console"}), 400
 
     game = Game.query.get(game_id)
     if not game:
         return jsonify({"error": f"Game {game_id} not found"}), 404
-    
+
     console = Console.query.get(console_id)
     if not console:
         return jsonify({"error": f"Console {console_id} not found"}), 404
 
     game_console = GameConsole(game_id=game_id, console_id=console_id)
-    
+
     db.session.add(game_console)
     db.session.commit()
 
     response_body = {
-        
-            "message": "Success",
-            "added": game_console.serialize()
-        
+
+        "message": "Success",
+        "added": game_console.serialize()
+
     }
     return jsonify(response_body), 200
+
 
 @api.route('/gameconsole/<int:gameconsole_id>', methods=['DELETE'])
 def del_game_console(gameconsole_id):
@@ -532,21 +738,21 @@ def del_game_console(gameconsole_id):
     game_console = db.session.get(GameConsole, gameconsole_id)
     if not game_console:
         return jsonify({"error": f"Game in console {gameconsole_id} not found"}), 404
-    
-    
+
     db.session.delete(game_console)
     db.session.commit()
 
     response_body = {
-        
-            "message": "Successfully deleted"
-        
+
+        "message": "Successfully deleted"
+
     }
     return jsonify(response_body), 200
 
 # =========================
 # CONSOLE FAVORITES
 # =========================
+
 
 @api.route('/console/favorites/<int:user_id>', methods=['GET'])
 def get_console_favorites(user_id):
@@ -561,55 +767,61 @@ def get_console_favorites(user_id):
     if not user_favorites:
         return jsonify({"msg": "No se encontraron favoritos para este usuario"}), 404
 
-    results = list(map(lambda consolefavorites: consolefavorites.serialize(), user_favorites))
+    results = list(
+        map(lambda consolefavorites: consolefavorites.serialize(), user_favorites))
 
     return jsonify(results), 200
+
 
 @api.route('/console/favorites/<int:user_id>/<int:console_id>', methods=['POST'])
 def add_favorite_console(user_id, console_id):
 
-    exists = ConsoleFavorites.query.filter_by(user_id=user_id, console_id=console_id).first()
-    
+    exists = ConsoleFavorites.query.filter_by(
+        user_id=user_id, console_id=console_id).first()
+
     if exists:
         return jsonify({"error": "This console is already assigned to your favorites"}), 400
 
     user = User.query.get(user_id)
     if not user:
         return jsonify({"error": f"Game {user_id} not found"}), 404
-    
+
     console = Console.query.get(console_id)
     if not console:
         return jsonify({"error": f"Console {console_id} not found"}), 404
 
     console_favorite = ConsoleFavorites(user_id=user_id, console_id=console_id)
-    
+
     db.session.add(console_favorite)
     db.session.commit()
 
     response_body = {
-        
-            "message": "Success",
-            "added": console_favorite.serialize()
-        
+
+        "message": "Success",
+        "added": console_favorite.serialize()
+
     }
     return jsonify(response_body), 200
 
 
-@api.route('/console/favorites/<int:user_id>/<int:consolefavorites_id>', methods=['DELETE'])
-def del_console_favorite(user_id, consolefavorites_id):
+@api.route('/console/favorites/<int:user_id>/<int:console_id>', methods=['DELETE'])
+def del_console_favorite(user_id, console_id):
 
-    favorite = db.session.get(ConsoleFavorites, consolefavorites_id)
+    favorite = ConsoleFavorites.query.filter_by(
+        user_id=user_id,
+        console_id=console_id
+    ).first()
 
     if not favorite:
-        return jsonify({"error": "Favorite not found"}), 404
+        return jsonify({"error": "This console is not in your favorites"}), 404
 
-    if favorite.user_id != user_id:
-        return jsonify({"error": "You are not authorized to delete this favorite"}), 403
-
-    db.session.delete(favorite)
-    db.session.commit()
-
-    return jsonify({"message": "Successfully deleted from your favorites"}), 200
+    try:
+        db.session.delete(favorite)
+        db.session.commit()
+        return jsonify({"message": "Successfully deleted from your favorites"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Error deleting favorite", "details": str(e)}), 500
 
 
 # =========================
@@ -629,37 +841,39 @@ def get_game_favorites(user_id):
     if not user_favorites:
         return jsonify({"msg": "No se encontraron favoritos para este usuario"}), 404
 
-    results = list(map(lambda gamefavorites: gamefavorites.serialize(), user_favorites))
+    results = list(
+        map(lambda gamefavorites: gamefavorites.serialize(), user_favorites))
 
     return jsonify(results), 200
+
 
 @api.route('/game/favorites/<int:user_id>/<int:game_id>', methods=['POST'])
 def add_favorite_game_admin(user_id, game_id):
 
+    exists = GameFavorites.query.filter_by(
+        user_id=user_id, game_id=game_id).first()
 
-    exists = GameFavorites.query.filter_by(user_id=user_id, game_id=game_id).first()
-    
     if exists:
         return jsonify({"error": "This game is already assigned to your favorites"}), 400
 
     user = User.query.get(user_id)
     if not user:
         return jsonify({"error": f"Game {user_id} not found"}), 404
-    
+
     game = Game.query.get(game_id)
     if not game:
         return jsonify({"error": f"Game {game_id} not found"}), 404
 
     game_favorite = GameFavorites(user_id=user_id, game_id=game_id)
-    
+
     db.session.add(game_favorite)
     db.session.commit()
 
     response_body = {
-        
-            "message": "Success",
-            "added": game_favorite.serialize()
-        
+
+        "message": "Success",
+        "added": game_favorite.serialize()
+
     }
     return jsonify(response_body), 200
 
@@ -668,9 +882,9 @@ def add_favorite_game_admin(user_id, game_id):
 @jwt_required()
 def toggle_favorite(game_id):
     user_id = int(get_jwt_identity())
-    
-    # Buscamos si ya existe el favorito
-    favorite = GameFavorites.query.filter_by(user_id=user_id, game_id=game_id).first()
+
+    favorite = GameFavorites.query.filter_by(
+        user_id=user_id, game_id=game_id).first()
 
     if request.method == 'DELETE' or (request.method == 'POST' and favorite):
         if favorite:
@@ -679,7 +893,6 @@ def toggle_favorite(game_id):
             return jsonify({"message": "Removed from favorites", "action": "removed"}), 200
         return jsonify({"error": "Favorite not found"}), 404
 
-    # Si es POST y no existe, lo creamos
     new_fav = GameFavorites(user_id=user_id, game_id=game_id)
     db.session.add(new_fav)
     db.session.commit()
@@ -709,8 +922,9 @@ def del_game_favorite(user_id, gamefavorites_id):
 
 @api.route('/user/login', methods=['POST'])
 def login():
-    email = request.json.get("email", None)
-    password = request.json.get("password", None)
+    body = request.get_json()
+    email = body.get("email")
+    password = body.get("password")
     user = User.query.filter_by(email=email).first()
     if user is None:
         return jsonify({"message": "Bad email or password"}), 401
@@ -724,13 +938,14 @@ def login():
 # USER SIGN-UP
 # =========================
 
+
 @api.route('/signup', methods=['POST'])
 def signup():
     body = request.get_json()
     user = User.query.filter_by(email=body["email"]).first()
     if user is not None:
         return jsonify({"message": "This email already exists"}), 401
-    
+
     user = User(**body)
     db.session.add(user)
     db.session.commit()
@@ -739,3 +954,33 @@ def signup():
     }
 
     return jsonify(response_body), 201
+
+# =========================
+# SEARCH BAR
+# =========================
+
+
+@api.route('/search', methods=['GET'])
+def search_everything():
+    query = request.args.get('query', '')
+    search_pattern = f"%{query}%"
+
+    
+    games = Game.query.filter(Game.name.ilike(search_pattern)).limit(5).all()
+    consoles = Console.query.filter(
+        Console.name.ilike(search_pattern)).limit(5).all()
+
+    results = []
+
+    for g in games:
+        data = g.serialize()
+        data["type"] = "games" 
+        results.append(data)
+
+    for c in consoles:
+        data = c.serialize()
+        data["type"] = "consoles"
+        results.append(data)
+
+    return jsonify({"games": [r for r in results if r["type"] == "games"],
+                    "consoles": [r for r in results if r["type"] == "consoles"]})

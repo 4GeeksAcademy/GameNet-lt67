@@ -5,40 +5,39 @@ import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 
 function LoginUser() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const { store, dispatch } = useGlobalReducer();
-    const navigate = useNavigate();
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const { store, dispatch } = useGlobalReducer()
+    const navigate = useNavigate()
 
-    function sendData(e) {
-        e.preventDefault();
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                "email": email,
-                "password": password
-            })
-        };
+    async function sendData(e) {
+    e.preventDefault();
+    
+    const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/api/user/login", {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+    });
 
-        fetch(import.meta.env.VITE_BACKEND_URL + "/api/user/login", requestOptions)
-            .then(response => response.json())
-            .then(data => {
-                dispatch({
-                    type: 'set_auth',
-                    payload: true
-                });
-                localStorage.setItem("auth", true);
-                localStorage.setItem("token", data.access_token);
-                navigate("/games"); // Redirigir solo tras éxito
-            })
-            .catch(error => console.error("Error en login:", error));
+    if (response.status === 200) {
+        const data = await response.json();
+        localStorage.setItem("auth", true);
+        localStorage.setItem("token", data.access_token);
+        dispatch({
+        type: "login_user",
+        payload: data.user
+    });
+        navigate("/");
+    } else {
+        const errorData = await response.json();
+        alert(errorData.msg || "Login failed"); 
     }
+}
 
     return (
         <div className="login-page">
             <div className="login-card p-4 p-md-5">
-                {/* Logo & Branding */}
+                
                 <div className="text-center mb-5">
                     <div className="logo-box-wrapper d-inline-flex mb-3">
                         <div className="logo-glow"></div>
@@ -103,4 +102,4 @@ function LoginUser() {
     );
 }
 
-export default LoginUser;
+export default LoginUser

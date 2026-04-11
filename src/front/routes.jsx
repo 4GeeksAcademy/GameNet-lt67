@@ -49,6 +49,14 @@ import SignUpUser from "./pages/UserInterface/SignUpUser";
 import GamesUser from "./pages/UserInterface/GamesUser";
 import GameDetails from "./pages/UserInterface/GameDetails";
 
+import PostDetails from "./pages/UserInterface/PostDetails";
+import EditUser from "./pages/UserInterface/EditUser";
+import MyGames from "./pages/UserInterface/MyGames";
+import MyLikes from "./pages/UserInterface/MyLikes";
+import ConsolesUser from "./pages/UserInterface/ConsolesUser";
+import MyConsoles from "./pages/UserInterface/MyConsoles";
+import MyComments from "./pages/UserInterface/MyComments";
+
 export const router = createBrowserRouter(
     createRoutesFromElements(
     // CreateRoutesFromElements function allows you to build route elements declaratively.
@@ -114,12 +122,21 @@ export const router = createBrowserRouter(
         <Route path="/game/favorites" element={<GameFavorites />} />
         <Route path="/game/favorites/:userId" element={<GameFavoriteList />} />
 
-
+        {/* User Interface */}
         <Route path="/login" element={<LoginUser />} />
         <Route path="/signup" element={<SignUpUser />} />
 
         <Route path="/games" element={<GamesUser />} />
-        <Route path="/game/details/:gameId" element={<GameDetails />} />
+        <Route path="/consoles" element={<ConsolesUser />} />
+        <Route path="/games/:gameId" element={<GameDetails />} />
+        <Route path="/post/:postId" element={ <PostDetails />} />
+        <Route path="/profile/edit/:userId" element={<EditUser />} />
+        <Route path="/my-games" element={ <MyGames />} />
+        <Route path="/my-likes" element={ <MyLikes />} />
+        <Route path="/my-comments" element={ <MyComments />} />
+        <Route path="/my-consoles" element={ <MyConsoles />} />
+
+        {/* Company Interface */}
       </Route>
     )
 );
