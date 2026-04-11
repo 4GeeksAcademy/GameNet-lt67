@@ -478,3 +478,150 @@ body {
 .hover-white:hover {
     color: white !important;
 }
+
+
+
+/* --- ESTILOS DE LA CARD CON TRANSPARENCIA --- */
+
+.gamenet-game-card {
+    /* El 0.4 hace que sea más transparente para que se vea tu fondo de atrás */
+    background-color: rgba(255, 255, 255, 0.05) !important; 
+    backdrop-filter: blur(10px); /* Esto le da un efecto de cristal (glassmorphism) */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 25px !important;
+    color: #f1f1f1 !important;
+    transition: all 0.3s ease;
+}
+
+.gamenet-game-card:hover {
+    transform: translateY(-8px);
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+}
+
+.gamenet-card-title {
+    color: #ff5e91 !important; /* El rosa neón de Mario */
+    font-weight: 800;
+    text-shadow: 0 0 10px rgba(255, 94, 145, 0.3);
+}
+
+.gamenet-stat-row {
+    color: #e0e0e0; /* Texto más claro para que se vea sobre el violeta */
+    font-weight: 500;
+}
+
+/* El botón con el degradado de tu imagen */
+.gamenet-btn-primary {
+    background: linear-gradient(90deg, #ff5e91 0%, #a259ff 100%) !important;
+    border: none !important;
+    color: white !important;
+    border-radius: 12px !important;
+    font-weight: bold;
+}
+
+.gamenet-btn-ghost {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border-radius: 12px !important;
+}
+
+
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.btn-favorite-active {
+    background: linear-gradient(90deg, #ff5e91 0%, #ff2a6d 100%) !important;
+    box-shadow: 0 0 15px rgba(255, 94, 145, 0.5);
+    animation: heartBeat 0.3s ease-in-out;
+}
+
+.heart-icon {
+    transition: all 0.3s ease;
+}
+
+.heart-filled {
+    fill: white; /* Rellena el corazón cuando está activo */
+}
+
+
+.game-detail-container {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 40px;
+    margin-top: 50px;
+}
+
+.game-header-img {
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    width: 100%;
+    max-width: 300px;
+}
+
+.trailer-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 20px;
+    border: 2px solid rgba(162, 89, 255, 0.3);
+}
+
+.trailer-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+
+/* Contenedores de Stats en la página de Detalle */
+.gamenet-stat-glass {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 15px !important;
+    padding: 15px;
+    color: #e0e0e0 !important; /* Texto claro */
+    transition: all 0.3s ease;
+}
+
+.gamenet-stat-glass:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    transform: translateX(5px); /* Un pequeño efecto de movimiento al pasar el mouse */
+}
+
+/* Para que los iconos resalten más */
+.stat-icon-players { color: #00d4ff; }
+.stat-icon-sales { color: #00ff88; }
+
+
+.gamenet-description {
+    /* Mantiene una altura mínima para que todas las cards midan lo mismo */
+    min-height: 4.5em; 
+    
+    /* Corta el texto a 3 líneas exactamente */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+    text-overflow: ellipsis;
+    
+    line-height: 1.5em;
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Para que las cards tengan siempre el mismo tamaño */
+.gamenet-game-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%; /* Obliga a la card a estirarse al alto máximo de la fila */
+}
