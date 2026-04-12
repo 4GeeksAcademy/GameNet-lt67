@@ -1,15 +1,17 @@
 export const initialStore = () => {
   const token = localStorage.getItem("token");
   const token_company = localStorage.getItem("token_company");
+  const token_admin = localStorage.getItem("token_admin");
   return {
     message: null,
     posts: [],
-    todos: [
-    ],
+    todos: [],
     auth: !!token,
     user: null,
     auth_company: !!token_company,
-    company: null 
+    company: null,
+    auth_admin: !!token_admin,
+    admin: null,
   };
 };
 
@@ -19,16 +21,30 @@ export default function storeReducer(store, action = {}) {
       return {
         ...store,
         auth: true,
-        user: action.payload, // <--- Esto es lo que permite que store.user sea visible
+        user: action.payload,
       };
 
     case "login_company":
       return {
         ...store,
         auth_company: true,
-        company: action.payload, // 
+        company: action.payload, //
       };
-    
+
+    case "login_admin":
+      return {
+        ...store,
+        auth_admin: true,
+        admin: action.payload,
+      };
+
+    case "logout_admin":
+      return {
+        ...store,
+        auth_admin: false,
+        admin: null,
+      };
+
     case "logout_company":
       return {
         ...store,

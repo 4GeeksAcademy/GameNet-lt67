@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { 
+    Share2, Edit3, Eye, Trash2, PlusCircle, 
+    ArrowLeft, Calendar, Tag, MessageSquare, Building, Hash 
+} from 'lucide-react';
 
 function CompanyPosts() {
     const navigate = useNavigate();
@@ -7,7 +11,6 @@ function CompanyPosts() {
 
     async function getCompanyPosts() {
         try {
-            // Using the English endpoint we defined earlier
             const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/api/posts");
             if (response.ok) {
                 const data = await response.json();
@@ -23,17 +26,13 @@ function CompanyPosts() {
     }, []);
 
     async function deleteCompanyPost(id) {
-        if (!window.confirm("Are you sure you want to delete this post?")) return;
+        if (!window.confirm("SYSTEM WARNING: Are you sure you want to delete this broadcast? This action cannot be undone.")) return;
 
-        const requestOptions = {
-            method: "DELETE",
-        };
-
+        const requestOptions = { method: "DELETE" };
         try {
             const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/post/${id}`, requestOptions);
             if (response.ok) {
-                console.log("Post deleted successfully");
-                getCompanyPosts(); // Refresh list
+                getCompanyPosts(); 
             }
         } catch (error) {
             console.error("Error deleting post:", error);
@@ -41,83 +40,99 @@ function CompanyPosts() {
     }
 
     return (
-        <div className="container mt-5 text-white">
-            <div className="d-flex justify-content-between align-items-center mb-4">
-                <h1>Manage Company Posts</h1>
-                <button className="btn btn-success" onClick={() => navigate('/new_companypost')}>
-                    + Create New Post
-                </button>
-            </div>
+        <div className="admin-page-container py-5 min-vh-100" style={{ backgroundColor: '#0a0a0a' }}>
+            <div className="container">
+                
+                {/* Header Section */}
+                <div className="d-flex align-items-center justify-content-between mb-5">
+                    <div className="d-flex align-items-center gap-3">
+                        <button onClick={() => navigate("/admin")} className="btn-back-home border-0 bg-transparent text-secondary">
+                            <ArrowLeft size={24} />
+                        </button>
+                        <div>
+                            <h2 className="brand-title h3 mb-0">COMMUNICATIONS HUB</h2>
+                            <p className="text-danger small fw-bold mb-0">Company Broadcasts & News</p>
+                        </div>
+                    </div>
+                    
+                    <button className="btn-login py-2 px-4 d-flex align-items-center gap-2 border-danger " 
+                            style={{borderColor: '#dc3545'}}
+                            onClick={() => navigate('/new_companypost')}>
+                        <PlusCircle size={18} /> New Broadcast
+                    </button>
+                </div>
 
-            <div className="table-responsive bg-dark p-3 rounded shadow">
-                <table className="table table-dark table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Company</th>
-                            <th>Category</th>
-                            <th>Message</th>
-                            <th>Date</th>
-                            <th className="text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {companyPosts.length > 0 ? (
-                            companyPosts.map((post) => (
-                                <tr key={post.id}>
-                                    <td>{post.id}</td>
-                                    <td>
-                                        {/* Now accessing the nested company name from serialize */}
-                                        <span className="fw-bold text-info">
-                                            {post.company?.name || `ID: ${post.id_company}`}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span className={`badge-ui badge-${post.content?.type || 'announcement'}`}>
-                                            {post.content?.type}
-                                        </span>
-                                    </td>
-                                    <td className="text-truncate" style={{ maxWidth: "200px" }}>
-                                        {post.content?.text}
-                                    </td>
-                                    <td>{post.timestamp}</td>
-                                    <td>
-                                        <div className="d-flex justify-content-center gap-2">
-                                            <Link to={`/companypost/${post.id}`} className="btn btn-sm btn-outline-light">
-                                                View
-                                            </Link>
-                                            <button 
-                                                className="btn btn-sm btn-primary" 
-                                                onClick={() => navigate('/update_companypost/' + post.id)}
-                                            >
-                                                Edit
-                                            </button>
-                                            <button 
-                                                className="btn btn-sm btn-danger" 
-                                                onClick={() => deleteCompanyPost(post.id)}
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
+                {/* Table Wrapper */}
+                <div className="admin-table-wrapper border border-danger rounded-4 overflow-hidden shadow-lg">
+                    <table className="table table-dark table-hover mb-0 align-middle">
+                        <thead className="bg-black border-bottom border-danger">
+                            <tr>
+                                <th className="p-4 text-danger small fw-bold"><Hash size={14} /> ID</th>
+                                <th className="p-4 text-danger small fw-bold"><Building size={14} /> SOURCE</th>
+                                <th className="p-4 text-danger small fw-bold"><Tag size={14} /> CATEGORY</th>
+                                <th className="p-4 text-danger small fw-bold"><MessageSquare size={14} /> CONTENT Preview</th>
+                                <th className="p-4 text-danger small fw-bold"><Calendar size={14} /> POSTED</th>
+                                <th className="p-4 text-danger small fw-bold text-center">CONTROL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {companyPosts.length > 0 ? (
+                                companyPosts.map((post) => (
+                                    <tr key={post.id} className="admin-table-row">
+                                        <td className="p-4 fw-mono text-secondary">#{post.id}</td>
+                                        <td className="p-4">
+                                            <span className="text-info fw-bold">
+                                                {post.company?.name || `Studio ID: ${post.id_company}`}
+                                            </span>
+                                        </td>
+                                        <td className="p-4">
+                                            <span className={`badge bg-black border border-danger text-danger text-uppercase p-2`} style={{fontSize: '10px'}}>
+                                                {post.content?.type || 'announcement'}
+                                            </span>
+                                        </td>
+                                        <td className="p-4">
+                                            <p className="text-secondary mb-0 text-truncate small" style={{ maxWidth: "250px" }}>
+                                                {post.content?.text}
+                                            </p>
+                                        </td>
+                                        <td className="p-4 text-secondary small">
+                                            {post.timestamp}
+                                        </td>
+                                        <td className="p-4">
+                                            <div className="d-flex justify-content-center gap-2">
+                                                <Link to={`/companypost/${post.id}`} className="btn-action btn-view" title="Preview Post">
+                                                    <Eye size={18} />
+                                                </Link>
+                                                <button className="btn-action btn-edit" onClick={() => navigate('/update_companypost/' + post.id)} title="Modify Post">
+                                                    <Edit3 size={18} />
+                                                </button>
+                                                <button className="btn-action btn-delete" onClick={() => deleteCompanyPost(post.id)} title="Retract Post">
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="6" className="text-center py-5">
+                                        <Share2 size={48} className="text-secondary opacity-25 mb-3" />
+                                        <p className="text-secondary">No transmissions detected in the logs.</p>
                                     </td>
                                 </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="6" className="text-center py-4 text-secondary">
-                                    No posts found. Start by creating one!
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div className="mt-4">
+                    <button className="btn-back-home d-flex align-items-center gap-2" onClick={() => navigate('/admin')}>
+                         <ArrowLeft size={16} /> RETURN TO PUBLIC FEED
+                    </button>
+                </div>
             </div>
-            
-            <button className="btn btn-outline-secondary mt-3" onClick={() => navigate('/')}>
-                Back to Feed
-            </button>
         </div>
     );
 }
 
-export default CompanyPosts
+export default CompanyPosts;

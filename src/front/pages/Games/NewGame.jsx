@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, PlusCircle, ArrowLeft, Gamepad2 } from "lucide-react";
+import { 
+    Search, PlusCircle, ArrowLeft, Gamepad2, 
+    Image as ImageIcon, Calendar, Users, 
+    BarChart3, FileText, Globe, Home 
+} from "lucide-react";
 
 function NewGame() {
     const navigate = useNavigate();
-
 
     const [companyId, setCompanyId] = useState(1);
     const [name, setName] = useState('');
@@ -15,11 +18,9 @@ function NewGame() {
     const [description, setDescription] = useState('');
     const [coverImg, setCoverImg] = useState('');
 
-
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [isSearching, setIsSearching] = useState(false);
-
 
     const handleRawgSearch = async (e) => {
         e.preventDefault();
@@ -38,15 +39,13 @@ function NewGame() {
         }
     };
 
-    // Función para autocompletar el formulario
     const selectGame = async (game) => {
         setName(game.name);
         setCoverImg(game.background_image);
         setReleaseDate(game.released);
-        setSearchResults([]); // Limpiar resultados
+        setSearchResults([]); 
         setSearchQuery('');
         
-        // Opcional: Buscar descripción detallada
         const apiKey = import.meta.env.VITE_RAWG_API_KEY;
         try {
             const res = await fetch(`https://api.rawg.io/api/games/${game.id}?key=${apiKey}`);
@@ -80,93 +79,122 @@ function NewGame() {
     };
 
     return (
-        <div className="container py-5 text-white">
-            <div className="d-flex justify-content-between align-items-center mb-5">
-                <h1 className="gamenet-card-title m-0">Create New Game</h1>
-                <button onClick={() => navigate("/game")} className="btn gamenet-btn-ghost d-flex align-items-center gap-2">
-                    <ArrowLeft size={18} /> Back
-                </button>
-            </div>
-
-            <div className="row g-5">
-  
-                <div className="col-lg-5">
-                    <div className="game-detail-container p-4">
-                        <h4 className="mb-4 d-flex align-items-center gap-2">
-                            <Gamepad2 className="text-info" /> Search a Game
-                        </h4>
-                        <form onSubmit={handleRawgSearch} className="d-flex gap-2 mb-4">
-                            <input 
-                                type="text" 
-                                className="form-control bg-dark text-white border-secondary"
-                                placeholder="E.g. Halo, Zelda..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                            <button className="btn btn-info text-white shadow-sm">
-                                <Search size={18} />
-                            </button>
-                        </form>
-
-                        <div className="list-group">
-                            {searchResults.map(game => (
-                                <button 
-                                    key={game.id} 
-                                    className="list-group-item list-group-item-action bg-dark text-white border-secondary d-flex align-items-center gap-3"
-                                    onClick={() => selectGame(game)}
-                                >
-                                    <img src={game.background_image} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '5px' }} />
-                                    <span className="small">{game.name}</span>
-                                </button>
-                            ))}
+        <div className="admin-page-container py-5 min-vh-100" style={{ backgroundColor: '#0a0a0a' }}>
+            <div className="container">
+                
+                {/* Header Section */}
+                <div className="d-flex align-items-center justify-content-between mb-5 px-3">
+                    <div className="d-flex align-items-center gap-3">
+                        <button onClick={() => navigate("/game")} className="btn-back-control border-0 bg-transparent">
+                            <ArrowLeft size={28} className="text-white opacity-75" />
+                        </button>
+                        <div>
+                            <h2 className="brand-title h3 mb-0 text-white fw-bold">GAME INGESTION</h2>
+                            <p className="text-info small fw-bold mb-0 d-flex align-items-center gap-2">
+                                <Gamepad2 size={14} /> NEW ENTRY: DATABASE SYNC
+                            </p>
                         </div>
                     </div>
+                    <button className="btn-neon-action gray-variant d-flex align-items-center gap-2 px-3 py-2" 
+                            onClick={() => navigate('/')}>
+                        <Home size={18} />
+                        <span className="text-white fw-bold">Home</span>
+                    </button>
                 </div>
 
-                <div className="col-lg-7">
-                    <form className="game-detail-container p-4" onSubmit={sendData}>
-                        <div className="row">
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label text-secondary small">Company ID</label>
-                                <input value={companyId} onChange={(e) => setCompanyId(e.target.value)} type="number" className="form-control bg-dark text-white border-secondary" />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label text-secondary small">Game Name</label>
-                                <input value={name} onChange={(e) => setName(e.target.value)} type="text" className="form-control bg-dark text-white border-secondary" required />
-                            </div>
-                            <div className="col-md-12 mb-3">
-                                <label className="form-label text-secondary small">Cover Image URL</label>
-                                <input value={coverImg} onChange={(e) => setCoverImg(e.target.value)} type="text" className="form-control bg-dark text-white border-secondary" />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label text-secondary small">Trailer URL</label>
-                                <input value={trailer} onChange={(e) => setTrailer(e.target.value)} type="text" className="form-control bg-dark text-white border-secondary" />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label text-secondary small">Release Date</label>
-                                <input value={releaseDate} onChange={(e) => setReleaseDate(e.target.value)} type="text" className="form-control bg-dark text-white border-secondary" />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label text-secondary small">Current Players</label>
-                                <input value={currentPlayers} onChange={(e) => setCurrentPlayers(e.target.value)} type="number" className="form-control bg-dark text-white border-secondary" />
-                            </div>
-                            <div className="col-md-6 mb-3">
-                                <label className="form-label text-secondary small">Total Sales</label>
-                                <input value={totalSales} onChange={(e) => setTotalSales(e.target.value)} type="number" className="form-control bg-dark text-white border-secondary" />
-                            </div>
-                            <div className="col-md-12 mb-4">
-                                <label className="form-label text-secondary small">Description</label>
-                                <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="form-control bg-dark text-white border-secondary" rows="3"></textarea>
+                <div className="row g-4">
+                    {/* Left Column: RAWG Search */}
+                    <div className="col-lg-4">
+                        <div className="admin-card-wrapper p-4 border border-secondary rounded-4 bg-dark-soft h-100">
+                            <h5 className="text-info fw-bold mb-4 d-flex align-items-center gap-2">
+                                <Search size={20} /> AUTO-IMPORT DATA
+                            </h5>
+                            
+                            <form onSubmit={handleRawgSearch} className="input-group mb-4">
+                                <input 
+                                    type="text" 
+                                    className="form-control custom-input-dark"
+                                    placeholder="Search RAWG database..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                />
+                                <button className="btn btn-info text-dark fw-bold" type="submit">
+                                    <Search size={18} />
+                                </button>
+                            </form>
+
+                            <div className="search-results-container">
+                                {isSearching ? (
+                                    <div className="text-center py-3"><div className="spinner-border text-info spinner-border-sm"></div></div>
+                                ) : (
+                                    searchResults.map(game => (
+                                        <button 
+                                            key={game.id} 
+                                            className="search-item-btn w-100 mb-2 d-flex align-items-center gap-3 p-2 rounded-3 border-0"
+                                            onClick={() => selectGame(game)}
+                                        >
+                                            <img src={game.background_image} alt="" className="rounded-2" style={{ width: '50px', height: '50px', objectFit: 'cover' }} />
+                                            <span className="text-white small text-start fw-bold">{game.name}</span>
+                                        </button>
+                                    ))
+                                )}
                             </div>
                         </div>
-                        <button type="submit" className="btn btn-primary w-100 py-3 fw-bold shadow-lg d-flex align-items-center justify-content-center gap-2">
-                            <PlusCircle size={20} /> Add Game to Database
-                        </button>
-                    </form>
+                    </div>
+
+                    {/* Right Column: Main Form */}
+                    <div className="col-lg-8">
+                        <div className="admin-card-wrapper p-4 border border-info rounded-4 bg-dark-soft shadow-lg">
+                            <form onSubmit={sendData}>
+                                <div className="row">
+                                    <div className="col-md-4 mb-3">
+                                        <label className="form-label text-info small fw-bold"><BarChart3 size={14}/> COMPANY ID</label>
+                                        <input value={companyId} onChange={(e) => setCompanyId(e.target.value)} type="number" className="form-control custom-input-dark" />
+                                    </div>
+                                    <div className="col-md-8 mb-3">
+                                        <label className="form-label text-info small fw-bold"><Gamepad2 size={14}/> GAME NAME</label>
+                                        <input value={name} onChange={(e) => setName(e.target.value)} type="text" className="form-control custom-input-dark" required placeholder="Project Name..." />
+                                    </div>
+
+                                    <div className="col-md-12 mb-3">
+                                        <label className="form-label text-info small fw-bold"><ImageIcon size={14}/> COVER ASSET (URL)</label>
+                                        <input value={coverImg} onChange={(e) => setCoverImg(e.target.value)} type="text" className="form-control custom-input-dark" placeholder="https://..." />
+                                    </div>
+
+                                    <div className="col-md-6 mb-3">
+                                        <label className="form-label text-info small fw-bold"><Globe size={14}/> TRAILER LINK</label>
+                                        <input value={trailer} onChange={(e) => setTrailer(e.target.value)} type="text" className="form-control custom-input-dark" placeholder="YouTube/Vimeo URL" />
+                                    </div>
+                                    <div className="col-md-6 mb-3">
+                                        <label className="form-label text-info small fw-bold"><Calendar size={14}/> LAUNCH DATE</label>
+                                        <input value={releaseDate} onChange={(e) => setReleaseDate(e.target.value)} type="text" className="form-control custom-input-dark" placeholder="YYYY-MM-DD" />
+                                    </div>
+
+                                    <div className="col-md-6 mb-3">
+                                        <label className="form-label text-info small fw-bold"><Users size={14}/> ACTIVE PLAYERS</label>
+                                        <input value={currentPlayers} onChange={(e) => setCurrentPlayers(e.target.value)} type="number" className="form-control custom-input-dark" />
+                                    </div>
+                                    <div className="col-md-6 mb-3">
+                                        <label className="form-label text-info small fw-bold"><BarChart3 size={14}/> TOTAL SALES</label>
+                                        <input value={totalSales} onChange={(e) => setTotalSales(e.target.value)} type="number" className="form-control custom-input-dark" />
+                                    </div>
+
+                                    <div className="col-md-12 mb-4">
+                                        <label className="form-label text-info small fw-bold"><FileText size={14}/> SOURCE DESCRIPTION</label>
+                                        <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="form-control custom-input-dark" rows="4" placeholder="Brief metadata description..."></textarea>
+                                    </div>
+                                </div>
+
+                                <button type="submit" className="btn-success-neon w-100 py-3 d-flex align-items-center justify-content-center gap-2 shadow-sm">
+                                    <PlusCircle size={20} /> DEPLOY TO DATABASE
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
 
-export default NewGame;
+export default NewGame

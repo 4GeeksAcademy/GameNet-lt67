@@ -11,7 +11,7 @@ function LoginCompany() {
     const navigate = useNavigate()
 
     useEffect(() => {
-
+        dispatch({ type: "logout_admin" });
         dispatch({ type: "logout" });
         dispatch({ type: "logout_company" });
         localStorage.clear();
@@ -37,7 +37,7 @@ function LoginCompany() {
             navigate("/company/dashboard");
         } else {
             const errorData = await response.json();
-            alert(errorData.msg || "Login failed");
+            alert(errorData.msg || "Access Denied: invalid credentials");
         }
     }
 
@@ -100,9 +100,9 @@ function LoginCompany() {
                 </form>
 
                 <div className="text-center mt-4">
-                    <a href="#" className="text-secondary small text-decoration-none hover-white">
-                        Forgot your password?
-                    </a>
+                    <Link to="/admin/login" className="text-secondary small text-decoration-none hover-white">
+                        For Admins
+                    </Link>
                 </div>
             </div>
         </div>
