@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 import {
     Search, Bell, User, LogOut, Heart, MessageSquare,
-    UserPen, Gamepad2, ExternalLink, Cpu, Menu, Building2
+    UserPen, Gamepad2, ExternalLink, Cpu, Menu, Building2, LayoutDashboard
 } from 'lucide-react';
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
@@ -65,7 +65,9 @@ export const Navbar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("token_company"); 
         dispatch({ type: "logout" });
+        dispatch({ type: "logout_company" });
         navigate("/login");
     };
 
@@ -121,7 +123,6 @@ export const Navbar = () => {
                                 )}
                             </div>
 
-                            {/* LOGO */}
                             <Link className="navbar-brand d-flex align-items-center gap-3 m-0" to="/">
                                 <div className="logo-box-wrapper">
                                     <div className="logo-glow"></div>
@@ -261,11 +262,69 @@ export const Navbar = () => {
                                         </div>
                                     </>
                                 )}
+                                
                             </div>
                         </div>
                     </div>
                 </nav>
             ) : null}
+
+            {store.auth_company && (
+                <nav className="navbar navbar-expand-lg custom-header sticky-top p-0 border-bottom border-info border-opacity-25">
+                    <div className="container" style={{ height: '70px' }}>
+                        
+                        
+                        <div className="d-flex align-items-center gap-3">
+                            <Link className="navbar-brand d-flex align-items-center gap-3 m-0" to="/company/dashboard">
+                                <div className="logo-box-wrapper">
+                                    <div className="logo-glow" style={{ background: 'linear-gradient(45deg, #00dbde, #fc00ff)' }}></div>
+                                    <div className="logo-box"><Building2 size={20} className="text-white" /></div>
+                                </div>
+                                <span className="brand-title d-none d-sm-inline">GameNet <small className="text-info" style={{fontSize: '0.6rem'}}>CORP</small></span>
+                            </Link>
+                        </div>
+
+                       
+                        <div className="d-none d-md-flex align-items-center gap-4 mx-auto">
+                            <Link to="/company/dashboard" className="text-decoration-none text-secondary small fw-bold hover-info">
+                                <LayoutDashboard size={16} className="me-1"/> ANALYTICS
+                            </Link>
+                        </div>
+
+                        
+                        <div className="d-flex align-items-center gap-3">
+                            <div className="position-relative">
+                                <button 
+                                    className={`btn-icon ${showUserMenu ? 'active' : ''}`} 
+                                    onClick={() => setShowUserMenu(!showUserMenu)}
+                                >
+                                    <Building2/>
+                                </button>
+
+                                {showUserMenu && (
+                                    <>
+                                        <div className="position-fixed top-0 start-0 w-100 h-100" onClick={() => setShowUserMenu(false)} style={{ zIndex: 998 }}></div>
+                                        <div className="user-dropdown-menu animate-fade-in shadow-lg border border-secondary" 
+                                             style={{ position: 'absolute', top: '100%', right: 0, zIndex: 999, backgroundColor: '#1a1a1a', minWidth: '220px', borderRadius: '12px', marginTop: '10px', padding: '8px' }}>
+                                            
+                                            <div className="px-3 py-2 border-bottom border-secondary mb-2">
+                                                <p className="text-white small mb-0 fw-bold">{store.company?.name}</p>
+                                                <p className="text-secondary mb-0" style={{ fontSize: '0.7rem' }}>Business Account</p>
+                                            </div>
+
+                        
+                                            
+                                            <button className="dropdown-item-custom text-danger" onClick={handleLogout}>
+                                                <LogOut size={16} /> <span>Logout Business</span>
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            )}
         </>
     );
 };

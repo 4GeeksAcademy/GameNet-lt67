@@ -9,6 +9,40 @@ import { useEffect } from "react"
 // Base component that maintains the navbar and footer throughout the page and the scroll to top functionality.
 export const Layout = () => {
     const { store, dispatch } = useGlobalReducer();
+    useEffect(() => {
+        const token_company = localStorage.getItem("token_company");
+
+     
+        if (token_company && !store.company) {
+            const fetchMyData = async () => {
+                try {
+                    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/company/me`, {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token_company}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        
+                        dispatch({ 
+                            type: "login_company", 
+                            payload: data 
+                        });
+                    } else {
+                        
+                        localStorage.removeItem("token_company");
+                        dispatch({ type: "login_company", payload: null, auth: false });
+                    }
+                } catch (error) {
+                    console.error("Error recuperando sesión:", error);
+                }
+            };
+
+            fetchMyData();
+        }
+    }, [store.company, dispatch]);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -34,7 +68,7 @@ export const Layout = () => {
                     } else {
                         
                         localStorage.removeItem("token");
-                        dispatch({ type: "set_auth", payload: false });
+                        dispatch({ type: "login_user", payload: null });
                     }
                 } catch (error) {
                     console.error("Error recuperando sesión:", error);

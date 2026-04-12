@@ -24,7 +24,7 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.config["JWT_TOKEN_LOCATION"] = ["headers"] # Fuerza a buscar en Headers
 app.config["JWT_HEADER_NAME"] = "Authorization"
 app.config["JWT_HEADER_TYPE"] = "Bearer"
-app.config["JWT_SECRET_KEY"] = "gamenet_secret_key" # Debe ser IGUAL a la del Login
+app.config["JWT_SECRET_KEY"] = "GameNet_Super_Secret_Key_2026_Secure_Global" 
 jwt = JWTManager(app)
 app.url_map.strict_slashes = False
 
