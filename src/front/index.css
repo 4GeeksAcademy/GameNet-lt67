@@ -910,7 +910,7 @@ body {
     animation: rgb-glow 10s linear infinite;
 }
 
-/* Tarjeta estilo Cristal Oscuro */
+
 .gamenet-glass-card {
     background: rgba(10, 10, 10, 0.9) !important;
     backdrop-filter: blur(10px);
@@ -918,7 +918,7 @@ body {
     border-radius: 18px !important;
 }
 
-/* Texto con gradiente */
+
 .gamenet-gradient-text {
     background: linear-gradient(90deg, #fff, #00dbde);
     -webkit-background-clip: text;
@@ -927,7 +927,7 @@ body {
     letter-spacing: 1px;
 }
 
-/* Inputs estilo GameNet */
+
 .gamenet-input {
     background-color: rgba(0, 0, 0, 0.6) !important;
     border: 1px solid #333 !important;
@@ -942,7 +942,7 @@ body {
     background-color: rgba(0, 0, 0, 0.8) !important;
 }
 
-/* Botón RGB Animado */
+
 .btn-gamenet-rgb {
     background: #000;
     color: #00dbde;
@@ -962,7 +962,7 @@ body {
     box-shadow: 0 0 20px rgba(0, 219, 222, 0.6);
 }
 
-/* Animaciones */
+
 @keyframes rgb-glow {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -981,7 +981,7 @@ body {
 }
 
 
-/* Contenedor de Banner */
+
 .profile-banner-container {
     height: 180px;
     width: 100%;
@@ -1006,7 +1006,6 @@ body {
     background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
 }
 
-/* Logo Overlap */
 .company-logo-overlap {
     position: absolute;
     top: -60px;
@@ -1023,7 +1022,7 @@ body {
     background-color: #000;
 }
 
-/* Efectos Neon */
+
 .shadow-neon {
     box-shadow: 0 0 15px rgba(0, 219, 222, 0.4);
 }
@@ -1038,3 +1037,1183 @@ body {
     border-bottom-right-radius: 1rem;
 }
 
+
+
+.admin-dashboard-wrapper {
+    background-image: radial-gradient(circle at top right, #1a1a1a, #0a0a0a);
+}
+
+
+.admin-card-button {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+
+.admin-card-button:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: #00dbde; 
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 219, 222, 0.1);
+}
+
+
+.admin-card-icon {
+    background: rgba(0, 0, 0, 0.3);
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.admin-card-button:hover .admin-card-icon {
+    transform: scale(1.1);
+}
+
+
+.btn-back-home {
+    background: transparent;
+    border: 1px solid #444;
+    color: #888;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.btn-back-home:hover {
+    border-color: #fff;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.admin-card-button {
+    animation: fadeInUp 0.4s ease forwards;
+}
+
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
+}
+
+.admin-modal-content {
+    background: #121212;
+    border: 1px solid rgba(0, 219, 222, 0.3);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 450px;
+    max-height: 80vh;
+}
+
+.user-list-container {
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.user-selection-item {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.user-selection-item:hover {
+    background: rgba(0, 219, 222, 0.1);
+    border-color: #00dbde;
+}
+
+.btn-close-modal {
+    background: none;
+    border: none;
+    color: #666;
+}
+
+.btn-close-modal:hover { color: #fff; }
+
+
+.game-cover-mini {
+    background: #000;
+    transition: transform 0.2s ease;
+}
+
+.admin-table-row:hover .game-cover-mini {
+    transform: scale(1.1);
+    border-color: #00dbde !important;
+}
+
+
+.border-primary {
+    border-color: #00dbde !important; 
+}
+
+.text-primary {
+    color: #00dbde !important;
+}
+
+
+.text-info { color: #0dcaf0 !important; }
+.text-success { color: #198754 !important; }
+
+/* Color Success / Companies */
+.border-success {
+    border-color: #198754 !important;
+}
+
+.text-success {
+    color: #198754 !important;
+}
+
+.company-logo-mini {
+    transition: all 0.3s ease;
+    background: #000;
+}
+
+.admin-table-row:hover .company-logo-mini {
+    box-shadow: 0 0 10px rgba(25, 135, 84, 0.4);
+    transform: scale(1.05);
+}
+
+/* Para el truncado de descripción */
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+/* Estilos para el color Warning (Consolas) */
+.border-warning {
+    border-color: #ffc107 !important;
+}
+
+.text-warning {
+    color: #ffc107 !important;
+}
+
+.console-icon-box {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.admin-table-row:hover .console-icon-box {
+    transform: rotate(-10deg) scale(1.1);
+    background: rgba(255, 193, 7, 0.1) !important;
+    border-color: #ffc107 !important;
+}
+
+/* Badge de precio estilizado */
+.badge.border-warning {
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 1px;
+}
+
+
+/* Color Danger / Broadcasts */
+.border-danger {
+    border-color: #dc3545 !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+
+/* Efecto Hover para Posts */
+.admin-table-row:hover {
+    background: rgba(220, 53, 69, 0.05) !important;
+}
+
+/* Estilo para el botón de retorno al feed */
+.btn-outline-secondary {
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #888;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.btn-outline-secondary:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+
+/* Color Púrpura para Asociaciones */
+.text-purple { color: #a855f7 !important; }
+.border-purple { border-color: #a855f7 !important; }
+
+.bg-dark-soft {
+    background: rgba(20, 20, 20, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+/* Círculo del icono central */
+.icon-link-circle {
+    width: 60px;
+    height: 60px;
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid #a855f7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+}
+
+/* Inputs personalizados */
+.custom-input-dark {
+    background-color: #000 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    padding: 12px !important;
+}
+
+.custom-input-dark:focus {
+    border-color: #a855f7 !important;
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.3) !important;
+}
+
+/* Botón de acción principal */
+.btn-link-action {
+    background: transparent;
+    border: 1px solid #a855f7;
+    color: #a855f7;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-link-action:hover {
+    background: #a855f7;
+    color: white;
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.4);
+}
+
+
+/* Color Rosa para la lista de favoritos */
+.border-pink {
+    border-color: #ec4899 !important;
+}
+
+.text-pink {
+    color: #ec4899 !important;
+}
+
+/* Ajustes para las celdas de la tabla en modo Dark */
+.admin-table-row:hover {
+    background-color: rgba(236, 72, 153, 0.03) !important;
+}
+
+/* Fuente monoespaciada para los IDs */
+.fw-mono {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* Contenedor General para asegurar fondo oscuro */
+.admin-page-container {
+    background-color: #0a0a0a !important;
+}
+
+/* Botones con Estilo Neón */
+.btn-neon-action {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid transparent;
+}
+
+/* Variante Rosa (Add Favorite) */
+.btn-neon-action.pink-variant {
+    border-color: #ec4899;
+    box-shadow: inset 0 0 10px rgba(236, 72, 153, 0.2);
+}
+
+.btn-neon-action.pink-variant:hover {
+    background: #ec4899;
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+}
+
+.btn-neon-action.pink-variant svg {
+    color: #ec4899; /* El icono es rosa */
+}
+
+.btn-neon-action.pink-variant:hover svg, 
+.btn-neon-action.pink-variant:hover span {
+    color: #000 !important; /* En hover, todo negro para contraste */
+}
+
+/* Variante Gris (Home) */
+.btn-neon-action.gray-variant {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.btn-neon-action.gray-variant:hover {
+    background: #ffffff;
+    border-color: #ffffff;
+}
+
+.btn-neon-action.gray-variant svg,
+.btn-neon-action.gray-variant span {
+    color: #ffffff !important; /* Texto siempre blanco */
+}
+
+.btn-neon-action.gray-variant:hover svg,
+.btn-neon-action.gray-variant:hover span {
+    color: #000000 !important; /* En hover, negro */
+}
+
+/* Flecha de volver */
+.btn-back-control:hover svg {
+    transform: translateX(-5px);
+    color: #ec4899 !important;
+    opacity: 1 !important;
+}
+
+
+/* Botón Neón Naranja (Consolas) */
+.btn-neon-action.orange-variant {
+    border-color: #ffc107;
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-neon-action.orange-variant:hover {
+    background: #ffc107;
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+}
+
+.btn-neon-action.orange-variant svg {
+    color: #ffc107;
+}
+
+.btn-neon-action.orange-variant:hover svg,
+.btn-neon-action.orange-variant:hover span {
+    color: #000 !important; /* Texto negro en hover para contraste total */
+}
+
+/* Variante Gris/Blanca (Home) */
+.btn-neon-action.gray-variant {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-neon-action.gray-variant:hover {
+    background: #ffffff;
+}
+
+.btn-neon-action.gray-variant:hover svg,
+.btn-neon-action.gray-variant:hover span {
+    color: #000 !important;
+}
+
+/* Fix para asegurar que el texto de los botones sea blanco por defecto */
+.btn-neon-action span {
+    color: #ffffff !important;
+}
+
+
+/* Variante Púrpura (Asociación Game-Console) */
+.btn-neon-action.purple-variant {
+    border: 1px solid #a855f7;
+    background: rgba(168, 85, 247, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-neon-action.purple-variant:hover {
+    background: #a855f7;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+}
+
+.btn-neon-action.purple-variant svg {
+    color: #a855f7;
+}
+
+.btn-neon-action.purple-variant:hover svg,
+.btn-neon-action.purple-variant:hover span {
+    color: #000 !important; /* Texto negro para contraste en hover */
+}
+
+/* Fix general para texto de botones neón */
+.btn-neon-action span {
+    color: #ffffff !important;
+}
+
+/* Borde de tabla púrpura */
+.border-purple {
+    border-color: #a855f7 !important;
+}
+
+.text-purple {
+    color: #a855f7 !important;
+}
+
+/* Color Cian para Usuarios */
+.text-cyan { color: #06b6d4 !important; }
+.border-cyan { border-color: #06b6d4 !important; }
+
+/* Círculo del icono central */
+.icon-user-circle {
+    width: 60px;
+    height: 60px;
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid #06b6d4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+}
+
+/* Inputs con borde cian */
+.custom-input-dark-cyan {
+    background-color: #000 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    padding: 12px !important;
+}
+
+.custom-input-dark-cyan:focus {
+    border-color: #06b6d4 !important;
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.3) !important;
+}
+
+/* Botón de acción Cian con texto blanco forzado */
+.btn-cyan-action {
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid #06b6d4;
+    color: #ffffff !important; /* Texto Blanco */
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.btn-cyan-action:hover {
+    background: #06b6d4;
+    color: #000000 !important; /* Texto negro en hover para contraste */
+    box-shadow: 0 0 25px rgba(6, 182, 212, 0.4);
+}
+
+/* Avatar Glow para el perfil */
+.icon-avatar-glow {
+    width: 90px;
+    height: 90px;
+    background: #06b6d4;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 30px rgba(6, 182, 212, 0.5);
+    border: 4px solid #000;
+}
+
+/* Fondo para la sección de info de la card */
+.bg-dark-soft {
+    background-color: rgba(15, 15, 15, 0.95) !important;
+}
+
+/* Fuente Mono para los detalles técnicos */
+.fw-mono {
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 0.5px;
+}
+
+/* Botón de acción con texto blanco forzado */
+.btn-cyan-action {
+    background: rgba(6, 182, 212, 0.1);
+    border: 1px solid #06b6d4;
+    color: #ffffff !important; /* Texto Blanco */
+    font-weight: bold;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-cyan-action:hover {
+    background: #06b6d4;
+    color: #000 !important;
+}
+
+/* Fix para botón Home texto blanco */
+.btn-neon-action.gray-variant span {
+    color: #ffffff !important;
+}
+
+
+/* Inputs personalizados Dark */
+.custom-input-dark {
+    background-color: #000 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    padding: 10px !important;
+    transition: all 0.2s ease;
+}
+
+.custom-input-dark:focus {
+    border-color: #0dcaf0 !important;
+    box-shadow: 0 0 8px rgba(13, 202, 240, 0.2) !important;
+}
+
+/* Items de búsqueda RAWG */
+.search-item-btn {
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.2s ease;
+}
+
+.search-item-btn:hover {
+    background: rgba(13, 202, 240, 0.1);
+    transform: translateX(5px);
+}
+
+/* Botón de éxito (Verde Neón) */
+.btn-success-neon {
+    background: rgba(25, 135, 84, 0.1);
+    border: 1px solid #198754;
+    color: #ffffff !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-success-neon:hover {
+    background: #198754;
+    color: #000 !important;
+    box-shadow: 0 0 20px rgba(25, 135, 84, 0.4);
+}
+
+/* Fondo suave para cards */
+.bg-dark-soft {
+    background-color: rgba(15, 15, 15, 0.9) !important;
+}
+
+/* Color Púrpura Neón para Game Override */
+.text-purple-neon {
+    color: #bc13fe !important;
+}
+
+.bg-purple-neon-transparent {
+    background-color: rgba(188, 19, 254, 0.1) !important;
+}
+
+.border-purple-neon {
+    border-color: #bc13fe !important;
+}
+
+/* Inputs con acento púrpura */
+.custom-input-dark-purple {
+    background-color: #000 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    padding: 10px !important;
+    transition: all 0.2s ease;
+}
+
+.custom-input-dark-purple:focus {
+    border-color: #bc13fe !important;
+    box-shadow: 0 0 10px rgba(188, 19, 254, 0.2) !important;
+}
+
+/* Botón de Acción Púrpura */
+.btn-purple-action {
+    background: rgba(188, 19, 254, 0.15);
+    border: 1px solid #bc13fe;
+    color: #ffffff !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-purple-action:hover {
+    background: #bc13fe;
+    color: #000 !important;
+    box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
+}
+
+.placeholder-preview {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+
+/* Botón de regreso circular con efecto glass */
+.btn-back-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.btn-back-circle:hover {
+    background: #0dcaf0;
+    color: #000;
+    transform: scale(1.1);
+}
+
+/* Contenedor de información con fondo oscuro suave */
+.bg-dark-soft {
+    background-color: #121212 !important;
+}
+
+/* Estilo para las cajas de información interna */
+.bg-black-50 {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* Truncar texto largo de URLs */
+.truncate {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+/* Tipografía extra bold para títulos */
+.fw-black {
+    font-weight: 900;
+}
+
+.tracking-tighter {
+    letter-spacing: -2px;
+}
+
+
+/* Espaciado de títulos */
+.tracking-wider {
+    letter-spacing: 1.5px;
+}
+
+.fw-black {
+    font-weight: 900;
+}
+
+.x-small {
+    font-size: 0.75rem;
+}
+
+/* Caja de verificación especial */
+.bg-primary-transparent {
+    background: rgba(13, 110, 253, 0.05);
+}
+
+.verification-switch-box {
+    transition: all 0.3s ease;
+}
+
+/* Switch personalizado */
+.custom-switch {
+    width: 3em !important;
+    height: 1.5em !important;
+    cursor: pointer;
+}
+
+.custom-switch:checked {
+    background-color: #ffc107 !important; /* Ámbar/Oro para verificado */
+    border-color: #ffc107 !important;
+}
+
+/* Botón de Marca */
+.btn-brand-primary {
+    background: #0d6efd;
+    border: none;
+    color: white;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-brand-primary:hover {
+    background: #0b5ed7;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(13, 110, 253, 0.3);
+}
+
+/* Inputs consistentes con el resto de la App */
+.custom-input-dark {
+    background-color: #1a1d20 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    padding: 12px !important;
+    border-radius: 10px !important;
+}
+
+.custom-input-dark:focus {
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15) !important;
+}
+
+
+/* Color Primario para Empresas (Azul Tech) */
+.text-primary {
+    color: #0d6efd !important;
+}
+
+.text-primary-emphasis {
+    color: #6ea8fe !important;
+}
+
+.border-primary-subtle {
+    border-color: rgba(13, 110, 253, 0.3) !important;
+}
+
+.bg-primary-transparent {
+    background-color: rgba(13, 110, 253, 0.05) !important;
+}
+
+/* Inputs con acento azul */
+.custom-input-dark {
+    background-color: #1a1d20 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    padding: 12px !important;
+    transition: all 0.2s ease;
+}
+
+.custom-input-dark:focus {
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 12px rgba(13, 110, 253, 0.2) !important;
+}
+
+/* Previsualización de Imágenes */
+.logo-preview-box img, .banner-preview-box img {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+}
+
+.banner-preview-box img {
+    object-fit: cover;
+}
+
+/* Botón de Sincronización */
+.btn-brand-primary {
+    background: #0d6efd;
+    border: none;
+    color: white;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-brand-primary:hover {
+    background: #0b5ed7;
+    box-shadow: 0 8px 15px rgba(13, 110, 253, 0.3);
+    transform: translateY(-2px);
+}
+
+.x-small {
+    font-size: 0.7rem;
+}
+
+/* Contenedor de tarjeta oscuro (Azul profundo/Gris) */
+.bg-dark-soft {
+    background-color: #111418 !important;
+}
+
+/* Tipografía de descripción */
+.lead-description {
+    font-size: 1.1rem;
+    color: #ced4da;
+    text-wrap: pretty;
+}
+
+/* Efecto hover para ítems de contacto */
+.hover-bg-light {
+    transition: background 0.3s ease;
+}
+
+.hover-bg-light:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* Espaciado técnico */
+.tracking-widest {
+    letter-spacing: 2px;
+}
+
+.fw-black {
+    font-weight: 900;
+}
+
+/* Ajuste del logo para que no se deforme */
+.company-logo-profile img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+/* Botón de regreso con glassmorphism */
+.btn-back-circle {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(8px);
+    z-index: 10;
+}
+
+.btn-back-circle:hover {
+    background: #0d6efd;
+    transform: translateX(-3px);
+}
+
+
+/* Badge de Icono Superior */
+.icon-badge-red {
+    width: 64px;
+    height: 64px;
+    background: rgba(220, 53, 69, 0.1);
+    border: 2px solid #dc3545;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(220, 53, 69, 0.2);
+}
+
+/* Inputs con acento rojo */
+.custom-input-dark-red {
+    background-color: #1a1a1a !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    padding: 12px !important;
+    border-radius: 10px !important;
+    transition: all 0.2s ease;
+}
+
+.custom-input-dark-red:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 12px rgba(220, 53, 69, 0.2) !important;
+}
+
+/* Botón de Acción Rojo */
+.btn-red-action {
+    background: #dc3545;
+    border: none;
+    color: white;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-red-action:hover {
+    background: #c82333;
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+}
+
+.tracking-tighter {
+    letter-spacing: -1px;
+}
+
+
+/* Animación suave para el icono de actualización */
+.animate-spin-slow {
+    animation: spin 4s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Contenedor transparente rojo */
+.bg-danger-transparent {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+/* Inputs específicos para el modo oscuro técnico */
+.custom-input-dark {
+    background-color: #000 !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: white !important;
+    padding: 12px !important;
+}
+
+.custom-input-dark:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.2) !important;
+}
+
+/* Botón de acción con el mismo estilo rojo industrial */
+.btn-red-action {
+    background: #dc3545;
+    border: none;
+    color: white;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-red-action:hover {
+    background: #bd2130;
+    box-shadow: 0 0 20px rgba(220, 53, 69, 0.4);
+    transform: translateY(-2px);
+}
+
+
+/* Hero section de hardware con gradiente sutil */
+.hardware-hero {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+}
+
+/* Caja de precio destacada */
+.price-tag-large {
+    min-width: 200px;
+    box-shadow: 0 10px 30px rgba(220, 53, 69, 0.15);
+}
+
+/* Contenedores de iconos técnicos */
+.spec-icon-box {
+    box-shadow: inset 0 0 10px rgba(220, 53, 69, 0.05);
+    transition: all 0.3s ease;
+}
+
+.spec-item:hover .spec-icon-box {
+    transform: translateY(-5px);
+    border-color: #dc3545 !important;
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.2);
+}
+
+/* Tipografía técnica */
+.tracking-tighter {
+    letter-spacing: -2px;
+}
+
+.fw-black {
+    font-weight: 900;
+}
+
+.bg-dark-soft {
+    background-color: #121212 !important;
+}
+
+
+/* Color Primario: Cian Neón */
+.text-info {
+    color: #0dcaf0 !important;
+}
+
+.bg-info-subtle {
+    background-color: rgba(13, 202, 240, 0.1) !important;
+}
+
+.btn-brand-info {
+    background: #0dcaf0;
+    border: none;
+    color: #000;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.btn-brand-info:hover {
+    background: #0baccc;
+    box-shadow: 0 0 20px rgba(13, 202, 240, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Inputs con acento cian */
+.custom-input-dark {
+    background-color: #1a1d21 !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    padding: 12px !important;
+}
+
+.custom-input-dark:focus {
+    border-color: #0dcaf0 !important;
+    box-shadow: 0 0 10px rgba(13, 202, 240, 0.2) !important;
+}
+
+/* Estilo para la Previsualización */
+.post-preview-card {
+    transition: all 0.3s ease;
+    background: linear-gradient(145deg, #16181b 0%, #0a0b0d 100%);
+}
+
+.x-small {
+    font-size: 0.75rem;
+}
+
+.tracking-widest {
+    letter-spacing: 2px;
+}
+
+/* Inputs con enfoque en Cian */
+.custom-input-dark-info {
+    background-color: #1a1d21 !important;
+    border: 1px solid rgba(13, 202, 240, 0.2) !important;
+    color: white !important;
+    padding: 14px !important;
+    border-radius: 12px !important;
+    transition: all 0.2s ease;
+}
+
+.custom-input-dark-info:focus {
+    border-color: #0dcaf0 !important;
+    box-shadow: 0 0 15px rgba(13, 202, 240, 0.15) !important;
+    outline: none;
+}
+
+/* Botón Brand Info (Cian) */
+.btn-brand-info {
+    background: #0dcaf0;
+    border: none;
+    color: #000;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.btn-brand-info:hover {
+    background: #0baccc;
+    box-shadow: 0 5px 20px rgba(13, 202, 240, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Badge sutil */
+.bg-info-subtle {
+    background: rgba(13, 202, 240, 0.1);
+}
+
+.x-small {
+    font-size: 0.75rem;
+}
+
+.post-preview-card {
+    background: #111214;
+    border-color: #2d3135 !important;
+}
+
+
+/* Fondos y Contenedores */
+.bg-dark-soft {
+    background-color: #16181b !important;
+}
+
+.bg-black-25 {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.bg-info-subtle {
+    background-color: rgba(13, 202, 240, 0.1);
+}
+
+/* Tipografía */
+.tracking-tighter {
+    letter-spacing: -1px;
+}
+
+.tracking-widest {
+    letter-spacing: 2px;
+}
+
+.x-small {
+    font-size: 0.7rem;
+}
+
+/* Efectos de la tarjeta */
+.admin-card-wrapper {
+    transition: transform 0.3s ease;
+}
+
+/* Ajuste para que el texto del mensaje destaque */
+.message-container {
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+}
+
+
+/* Inputs oscuros personalizados */
+.custom-input-dark {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    transition: all 0.3s ease;
+}
+
+.custom-input-dark:focus {
+    border-color: #0dcaf0 !important;
+    box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.15) !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Botón Brand Info */
+.btn-brand-info {
+    background: linear-gradient(45deg, #0dcaf0, #0aa2c0);
+    border: none;
+    color: #000;
+    border-radius: 8px;
+    transition: all 0.3s transform;
+}
+
+.btn-brand-info:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+}
+
+/* Subtles para los iconos de la guía */
+.bg-info-subtle {
+    background-color: rgba(13, 202, 240, 0.1) !important;
+}
+
+.bg-success-subtle {
+    background-color: rgba(25, 135, 84, 0.1) !important;
+}

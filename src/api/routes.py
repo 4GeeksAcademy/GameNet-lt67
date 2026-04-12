@@ -188,17 +188,26 @@ def get_current_user():
 
 @api.route('/user/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
-
+    # 1. Buscar al usuario
     user = User.query.filter_by(id=user_id).first()
+    
     if user is None:
         return jsonify({
             "error": "User not found"
-        }), 400
+        }), 404 
 
-    db.session.delete(user)
-    db.session.commit()
+  
+    temp_name = user.nickname 
 
-    return jsonify({"message": "User " + user.name + " deleted succesfully."}), 200
+    try:
+  
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({"message": f"User {temp_name} deleted successfully."}), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Could not delete user. Check for related favorites."}), 500
 
 
 @api.route('/user', methods=['POST'])
@@ -280,18 +289,30 @@ def get_my_company():
 
 @api.route('/company/<int:company_id>', methods=['DELETE'])
 def delete_company(company_id):
-
-    company = Company.query.filter_by(id=company_id).first()
+    
+    company = Company.query.get(company_id) 
+    
     if company is None:
+        return jsonify({"error": "Company not found"}), 404
+
+    
+    company_name = company.name 
+
+    try:
+       
+        db.session.delete(company)
+        db.session.commit()
+        
         return jsonify({
-            "error": "Company not found"
-        }), 400
+            "message": f"Company '{company_name}' and its relations were deleted successfully."
+        }), 200
 
-    db.session.delete(company)
-    db.session.commit()
-
-    return jsonify({"message": "Company " + company.name + " deleted succesfully."}), 200
-
+    except Exception as e:
+      
+        db.session.rollback()
+        return jsonify({
+            "error": "Cannot delete company. Verify if there are games linked to this provider."
+        }), 409 
 
 @api.route('/company', methods=['POST'])
 def create_company():
@@ -377,17 +398,31 @@ def get_game(game_id):
 
 @api.route('/game/<int:game_id>', methods=['DELETE'])
 def delete_game(game_id):
-
-    game = Game.query.filter_by(id=game_id).first()
+    
+    game = Game.query.get(game_id)
+    
     if game is None:
+        return jsonify({"error": "Game not found"}), 404
+
+    
+    game_title = game.name 
+
+    try:
+       
+        db.session.delete(game)
+        db.session.commit()
+        
         return jsonify({
-            "error": "Game not found"
-        }), 400
+            "message": f"Game '{game_title}' deleted successfully."
+        }), 200
 
-    db.session.delete(game)
-    db.session.commit()
-
-    return jsonify({"message": "Game " + game.name + " deleted succesfully."}), 200
+    except Exception as e:
+        
+        db.session.rollback()
+        print(f"Error detectado: {str(e)}") 
+        return jsonify({
+            "error": "Cannot delete game. It is probably linked to favorites or consoles."
+        }), 409 
 
 
 @api.route('/game', methods=['POST'])
@@ -447,6 +482,16 @@ def get_all_posts():
 
     return jsonify(results), 200
 
+@api.route('/post/admin/<int:companypost_id>', methods=['GET'])
+def get_post_admin(companypost_id):
+    
+    companypost = CompanyPost.query.filter_by(id=companypost_id).first()
+    
+  
+    if companypost is None:
+        return jsonify({"msg": "Post not found"}), 404
+
+    return jsonify(companypost.serialize()), 200
 
 @api.route('/post/<int:companypost_id>', methods=['GET'])
 @jwt_required(optional=True)
@@ -472,16 +517,45 @@ def get_post(companypost_id):
 def delete_post(companypost_id):
 
     companypost = CompanyPost.query.filter_by(id=companypost_id).first()
+    
     if companypost is None:
         return jsonify({
             "error": "Company Post not found"
-        }), 400
+        }), 404 
 
     db.session.delete(companypost)
     db.session.commit()
 
-    return jsonify({"message": "Company Post " + companypost.id + " deleted succesfully."}), 200
+    return jsonify({"message": f"Company Post {companypost_id} deleted successfully."}), 200
 
+
+@api.route('/posts/admin', methods=['POST'])
+def create_post_admin():
+    body = request.get_json()
+    
+    
+    if not body or "message" not in body:
+        return jsonify({"msg": "El mensaje es obligatorio"}), 400
+
+    try:
+        
+        new_post = CompanyPost(
+            id_company=body["id_company"],
+            message=body['message'],
+            image=body.get('image'),
+            content_type=body.get('content_type', 'announcement') 
+        )
+
+        db.session.add(new_post)
+        db.session.commit()
+        
+        return jsonify(new_post.serialize()), 201
+
+    except Exception as e:
+        db.session.rollback()
+
+        print(f"Error en base de datos: {str(e)}") 
+        return jsonify({"msg": "Error interno al crear el post"}), 500
 
 @api.route('/posts', methods=['POST'])
 @jwt_required()
@@ -841,23 +915,25 @@ def add_favorite_console(user_id, console_id):
 
 
 @api.route('/console/favorites/<int:user_id>/<int:console_id>', methods=['DELETE'])
-def del_console_favorite(user_id, console_id):
+def delete_console_favorite(user_id, console_id):
 
-    favorite = ConsoleFavorites.query.filter_by(
-        user_id=user_id,
-        console_id=console_id
-    ).first()
+    favorite = ConsoleFavorites.query.filter_by(user_id=user_id, console_id=console_id).first()
+    
+    print(f"Buscando en DB: User {user_id}, Console {console_id}") 
 
-    if not favorite:
-        return jsonify({"error": "This console is not in your favorites"}), 404
+    if favorite is None:
+        print("No se encontró el favorito en la base de datos")
+        return jsonify({"msg": "Favorite association not found"}), 404
 
     try:
         db.session.delete(favorite)
         db.session.commit()
-        return jsonify({"message": "Successfully deleted from your favorites"}), 200
+        print("¡Eliminado exitosamente de la DB!")
+        return jsonify({"msg": "Favorite deleted successfully"}), 200
     except Exception as e:
         db.session.rollback()
-        return jsonify({"error": "Error deleting favorite", "details": str(e)}), 500
+        print(f"Error al eliminar: {str(e)}")
+        return jsonify({"error": "Internal server error"}), 500
 
 
 # =========================
@@ -865,54 +941,47 @@ def del_console_favorite(user_id, console_id):
 # =========================
 
 @api.route('/game/favorites/<int:user_id>', methods=['GET'])
-def get_game_favorites(user_id):
-
-    user_favorites = db.session.query(GameFavorites).filter(
-        GameFavorites.user_id == user_id
-    ).options(
-        joinedload(GameFavorites.user),
-        joinedload(GameFavorites.game)
-    ).all()
-
-    if not user_favorites:
-        return jsonify({"msg": "No se encontraron favoritos para este usuario"}), 404
-
-    results = list(
-        map(lambda gamefavorites: gamefavorites.serialize(), user_favorites))
-
-    return jsonify(results), 200
-
+def get_user_game_favorites(user_id):
+    
+    favorites = GameFavorites.query.filter_by(user_id=user_id).all()
+    
+    if not favorites:
+        
+        return jsonify([]), 200
+        
+    return jsonify([fav.serialize() for fav in favorites]), 200
 
 @api.route('/game/favorites/<int:user_id>/<int:game_id>', methods=['POST'])
 def add_favorite_game_admin(user_id, game_id):
+    # LOG DE ENTRADA
+    print(f"DEBUG: Intentando agregar User {user_id} y Game {game_id}")
 
     exists = GameFavorites.query.filter_by(
         user_id=user_id, game_id=game_id).first()
 
     if exists:
-        return jsonify({"error": "This game is already assigned to your favorites"}), 400
+        print(f"DEBUG: La relación ya existe con ID: {exists.id}")
+        return jsonify({"error": f"Relationship already exists: User {user_id} - Game {game_id}"}), 400
 
     user = User.query.get(user_id)
     if not user:
-        return jsonify({"error": f"Game {user_id} not found"}), 404
+        return jsonify({"error": f"User {user_id} not found"}), 404
 
     game = Game.query.get(game_id)
     if not game:
         return jsonify({"error": f"Game {game_id} not found"}), 404
 
-    game_favorite = GameFavorites(user_id=user_id, game_id=game_id)
-
-    db.session.add(game_favorite)
-    db.session.commit()
-
-    response_body = {
-
-        "message": "Success",
-        "added": game_favorite.serialize()
-
-    }
-    return jsonify(response_body), 200
-
+    try:
+        game_favorite = GameFavorites(user_id=user_id, game_id=game_id)
+        db.session.add(game_favorite)
+        db.session.commit()
+        return jsonify({
+            "message": "Success",
+            "added": game_favorite.serialize()
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
 
 @api.route('/game/favorites/<int:game_id>', methods=['POST', 'DELETE'])
 @jwt_required()

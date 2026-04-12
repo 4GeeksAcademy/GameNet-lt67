@@ -88,6 +88,7 @@ class CompanyPost(db.Model):
             "id": self.id,
             "timestamp": self.post_date.strftime("%b %d, %Y") if self.post_date else "No date",
             "company": {
+                "id_company": self.id_company,
                 "name": self.company.name if self.company else "Unknown",
                 "logo": self.company.logo if self.company else "",
                 "verified": self.company.verified if self.company else False
@@ -116,8 +117,9 @@ class Game(db.Model):
     cover_img: Mapped[str] = mapped_column(Text, nullable=True)
 
     company = relationship("Company", back_populates="game")
-    gameconsole = relationship("GameConsole", back_populates="game")
-    gamefavorites = relationship("GameFavorites", back_populates="game")
+
+    gameconsole = db.relationship('GameConsole', backref='games', cascade="all, delete-orphan")
+    gamefavorites = relationship("GameFavorites", back_populates="game", cascade="all, delete-orphan")
 
     def serialize(self):
         return {
@@ -157,7 +159,7 @@ class GameConsole(db.Model):
 
     __table_args__ = (UniqueConstraint('game_id', 'console_id', name='_game_console_uc'),)
 
-    game = relationship("Game", back_populates="gameconsole")
+    game = db.relationship("Game", back_populates="gameconsole")
     console = relationship("Console", back_populates="gameconsole")
 
     def serialize(self):
