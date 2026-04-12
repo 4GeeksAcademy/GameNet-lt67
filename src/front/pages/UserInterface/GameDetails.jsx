@@ -5,7 +5,7 @@ import { ArrowLeft, Users, ShoppingCart, Calendar, Building2 } from "lucide-reac
 function GameDetails() {
     const navigate = useNavigate();
     const { gameId } = useParams();
-    const [game, setGame] = useState(null); // Empezamos en null para manejar la carga
+    const [game, setGame] = useState(null); 
 
     useEffect(() => {
         const getGameDetails = async () => {
@@ -32,7 +32,7 @@ function GameDetails() {
 
     return (
         <div className="container py-5">
-            {/* Botón de volver minimalista */}
+           
             <button
                 onClick={() => navigate("/games")}
                 className="btn gamenet-btn-ghost mb-4 d-flex align-items-center gap-2"
@@ -49,11 +49,11 @@ function GameDetails() {
                             src={game.cover_img}
                             alt={game.name}
                             className="game-header-img mb-4"
-                            style={{ width: '200px', height: 'auto' }} // Ajustado para que no sea gigante
+                            style={{ width: '200px', height: 'auto' }} 
                         />
 
                         <div className="d-flex flex-column gap-3">
-                            {/* Contenedor de Jugadores */}
+                           
                             <div className="gamenet-stat-glass d-flex align-items-center justify-content-center shadow-sm">
                                 <Users size={24} className="stat-icon-players me-3" />
                                 <div>
@@ -62,7 +62,7 @@ function GameDetails() {
                                 </div>
                             </div>
 
-                            {/* Contenedor de Ventas */}
+                           
                             <div className="gamenet-stat-glass d-flex align-items-center justify-content-center shadow-sm">
                                 <ShoppingCart size={24} className="stat-icon-sales me-3" />
                                 <div>
@@ -73,7 +73,7 @@ function GameDetails() {
                         </div>
                     </div>
 
-                    {/* Columna Derecha: Info y Trailer */}
+                    
                     <div className="col-lg-8">
                         <h1 className="gamenet-card-title mb-2" style={{ fontSize: '3.5rem' }}>
                             {game.name}
@@ -93,7 +93,7 @@ function GameDetails() {
                             {game.description || "No description available for this title."}
                         </p>
 
-                        {/* Sección del Tráiler */}
+                        
                         {game.trailer_url && (
                             <div className="mb-4">
                                 <h4 className="mb-3">Official Trailer</h4>

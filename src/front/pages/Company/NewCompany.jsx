@@ -89,7 +89,7 @@ function NewCompany() {
                     </div>
                 </div>
 
-                {/* Verification Toggle (Usually for Admin use, but here for your setup) */}
+                
                 <div className="mb-4 form-check form-switch">
                     <input 
                         className="form-check-input" 

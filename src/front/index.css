@@ -889,3 +889,152 @@ body {
     background: #333;
     border-radius: 10px;
 }
+
+
+/* Contenedor principal con profundidad */
+.gamenet-post-container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Efecto de resplandor RGB detrás de la tarjeta */
+.gamenet-card-glow {
+    position: absolute;
+    top: -2px; left: -2px; right: -2px; bottom: -2px;
+    background: linear-gradient(45deg, #ff00ea, #00dbde, #ff00ea);
+    background-size: 400%;
+    z-index: -1;
+    filter: blur(15px);
+    opacity: 0.3;
+    border-radius: 20px;
+    animation: rgb-glow 10s linear infinite;
+}
+
+/* Tarjeta estilo Cristal Oscuro */
+.gamenet-glass-card {
+    background: rgba(10, 10, 10, 0.9) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 18px !important;
+}
+
+/* Texto con gradiente */
+.gamenet-gradient-text {
+    background: linear-gradient(90deg, #fff, #00dbde);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+/* Inputs estilo GameNet */
+.gamenet-input {
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    border: 1px solid #333 !important;
+    color: white !important;
+    transition: all 0.3s ease !important;
+    border-radius: 8px !important;
+}
+
+.gamenet-input:focus {
+    border-color: #00dbde !important;
+    box-shadow: 0 0 10px rgba(0, 219, 222, 0.2) !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Botón RGB Animado */
+.btn-gamenet-rgb {
+    background: #000;
+    color: #00dbde;
+    padding: 12px 30px;
+    border: 1px solid #00dbde;
+    border-radius: 5px;
+    font-weight: bold;
+    position: relative;
+    overflow: hidden;
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+
+.btn-gamenet-rgb:hover {
+    background: #00dbde;
+    color: #000;
+    box-shadow: 0 0 20px rgba(0, 219, 222, 0.6);
+}
+
+/* Animaciones */
+@keyframes rgb-glow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.icon-box-neon {
+    padding: 8px;
+    background: rgba(0, 219, 222, 0.1);
+    border-radius: 50%;
+    color: #00dbde;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 219, 222, 0.3);
+}
+
+
+/* Contenedor de Banner */
+.profile-banner-container {
+    height: 180px;
+    width: 100%;
+    position: relative;
+    border-radius: 1rem 1rem 0 0;
+    overflow: hidden;
+    border: 1px solid #333;
+}
+
+.banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.banner-gradient-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+}
+
+/* Logo Overlap */
+.company-logo-overlap {
+    position: absolute;
+    top: -60px;
+    left: 25px;
+    width: 110px;
+    height: 110px;
+    z-index: 5;
+}
+
+.company-logo-overlap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background-color: #000;
+}
+
+/* Efectos Neon */
+.shadow-neon {
+    box-shadow: 0 0 15px rgba(0, 219, 222, 0.4);
+}
+
+.hover-info:hover {
+    color: #00dbde !important;
+    transition: 0.3s;
+}
+
+.rounded-bottom-4 {
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+}
+

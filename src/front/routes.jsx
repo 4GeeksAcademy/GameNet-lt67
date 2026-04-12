@@ -56,6 +56,9 @@ import MyLikes from "./pages/UserInterface/MyLikes";
 import ConsolesUser from "./pages/UserInterface/ConsolesUser";
 import MyConsoles from "./pages/UserInterface/MyConsoles";
 import MyComments from "./pages/UserInterface/MyComments";
+import LoginCompany from "./pages/CompanyInterface/LoginCompany";
+import { CompanyDashboard } from "./pages/CompanyInterface/CompanyDashboard";
+import SignUpCompany from "./pages/CompanyInterface/SignUpCompany";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -137,6 +140,10 @@ export const router = createBrowserRouter(
         <Route path="/my-consoles" element={ <MyConsoles />} />
 
         {/* Company Interface */}
+        <Route path="/company/login" element={<LoginCompany />} />
+        <Route path="/company/signup" element={<SignUpCompany />} />
+
+        <Route path="/company/dashboard" element={ <CompanyDashboard />} />
       </Route>
     )
 );

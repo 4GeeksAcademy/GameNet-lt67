@@ -264,6 +264,19 @@ def get_company(company_id):
 
     return jsonify(company.serialize()), 200
 
+@api.route('/company/me', methods=['GET']) 
+@jwt_required()
+def get_my_company():
+
+    company_id = get_jwt_identity()
+    
+    company = Company.query.get(company_id)
+    
+    if company is None:
+        return jsonify({"msg": "Company not found"}), 404
+
+    return jsonify(company.serialize()), 200
+
 
 @api.route('/company/<int:company_id>', methods=['DELETE'])
 def delete_company(company_id):
@@ -321,6 +334,20 @@ def update_company(company_id):
     db.session.commit()
 
     return jsonify(company.serialize()), 200
+
+@api.route('/company/posts', methods=['GET'])
+@jwt_required()
+def get_company_posts():
+    
+    current_company_id = int(get_jwt_identity())
+    
+ 
+    posts = CompanyPost.query.filter_by(id_company=current_company_id).order_by(CompanyPost.id.desc()).all()
+
+    if not posts:
+        return jsonify([]), 200
+        
+    return jsonify([p.serialize() for p in posts]), 200
 
 # =========================
 # CRUD GAME
@@ -457,27 +484,36 @@ def delete_post(companypost_id):
 
 
 @api.route('/posts', methods=['POST'])
+@jwt_required()
 def create_post():
     body = request.get_json()
+    
+    
+    if not body or "message" not in body:
+        return jsonify({"msg": "El mensaje es obligatorio"}), 400
 
-    if not body or "message" not in body or "id_company" not in body:
-        return jsonify({"msg": "Missing message or company ID"}), 400
-
-    new_post = CompanyPost(
-        id_company=body['id_company'],
-        message=body['message'],
-        image=body.get('image'),
-        content_type=body.get('content_type', 'announcement')
-    )
-
-    db.session.add(new_post)
     try:
+        
+        company_identity = get_jwt_identity()
+        
+        # Creamos el post
+        new_post = CompanyPost(
+            id_company=company_identity,
+            message=body['message'],
+            image=body.get('image'),
+            content_type=body.get('content_type', 'announcement') 
+        )
+
+        db.session.add(new_post)
         db.session.commit()
+        
         return jsonify(new_post.serialize()), 201
+
     except Exception as e:
         db.session.rollback()
-        return jsonify({"msg": str(e)}), 500
 
+        print(f"Error en base de datos: {str(e)}") 
+        return jsonify({"msg": "Error interno al crear el post"}), 500
 
 @api.route('/post/<int:post_id>/like', methods=['POST'])
 @jwt_required()
@@ -965,7 +1001,6 @@ def search_everything():
     query = request.args.get('query', '')
     search_pattern = f"%{query}%"
 
-    
     games = Game.query.filter(Game.name.ilike(search_pattern)).limit(5).all()
     consoles = Console.query.filter(
         Console.name.ilike(search_pattern)).limit(5).all()
@@ -974,7 +1009,7 @@ def search_everything():
 
     for g in games:
         data = g.serialize()
-        data["type"] = "games" 
+        data["type"] = "games"
         results.append(data)
 
     for c in consoles:
@@ -984,3 +1019,43 @@ def search_everything():
 
     return jsonify({"games": [r for r in results if r["type"] == "games"],
                     "consoles": [r for r in results if r["type"] == "consoles"]})
+
+
+# =========================
+# COMPANY LOGIN
+# =========================
+
+@api.route('/company/login', methods=['POST'])
+def login_company():
+    body = request.get_json()
+    email = body.get("email")
+    password = body.get("password")
+    company = Company.query.filter_by(email=email).first()
+    if company is None:
+        return jsonify({"message": "Bad email or password"}), 401
+    if password != company.password:
+        return jsonify({"message": "Bad email or password"}), 401
+
+    access_token = create_access_token(identity=str(company.id))
+    return jsonify(access_token=access_token), 200
+
+# =========================
+# COMPANY SIGN-UP
+# =========================
+
+
+@api.route('/company/signup', methods=['POST'])
+def signup_company():
+    body = request.get_json()
+    company = Company.query.filter_by(email=body["email"]).first()
+    if company is not None:
+        return jsonify({"message": "This email already exists"}), 401
+
+    company = Company(**body)
+    db.session.add(company)
+    db.session.commit()
+    response_body = {
+        "message": "User created correctly"
+    }
+
+    return jsonify(response_body), 201

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock, LogIn, UserPlus } from 'lucide-react';
 import useGlobalReducer from "../../hooks/useGlobalReducer";
 
 
-function LoginUser() {
+function LoginCompany() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const { store, dispatch } = useGlobalReducer()
@@ -20,7 +20,7 @@ function LoginUser() {
     async function sendData(e) {
         e.preventDefault();
 
-        const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/api/user/login", {
+        const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/api/company/login", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -28,13 +28,13 @@ function LoginUser() {
 
         if (response.status === 200) {
             const data = await response.json();
-            localStorage.setItem("auth", true);
-            localStorage.setItem("token", data.access_token);
+            localStorage.setItem("auth_company", true);
+            localStorage.setItem("token_company", data.access_token);
             dispatch({
-                type: "login_user",
-                payload: data.user
+                type: "login_company",
+                payload: data
             });
-            navigate("/");
+            navigate("/company/dashboard");
         } else {
             const errorData = await response.json();
             alert(errorData.msg || "Login failed");
@@ -52,11 +52,11 @@ function LoginUser() {
                             <span className="logo-letter">G</span>
                         </div>
                     </div>
-                    <h1 className="brand-title h2">GameNet</h1>
-                    <p className="text-secondary small">Welcome back, Commander.</p>
+                    <h1 className="brand-title h2">GameNet | Companies</h1>
+                    <p className="text-secondary small">Welcome back, Sergeant.</p>
                 </div>
 
-                {/* Formulario Funcional */}
+
                 <form onSubmit={sendData} className="d-flex flex-column gap-3">
                     <div className="search-bar-wrapper">
                         <Mail size={18} className="search-icon" />
@@ -91,22 +91,22 @@ function LoginUser() {
                         <span>or</span>
                     </div>
 
-                    <Link to="/signup" className="text-decoration-none">
+                    <Link to="/company/signup" className="text-decoration-none">
                         <button type="button" className="btn-signup-ghost w-100">
                             <UserPlus size={20} className="me-2" />
-                            Create new account
+                            Create new company account
                         </button>
                     </Link>
                 </form>
 
                 <div className="text-center mt-4">
-                    <Link to="/company/login" className="text-secondary small text-decoration-none hover-white">
-                        For Companies
-                    </Link>
+                    <a href="#" className="text-secondary small text-decoration-none hover-white">
+                        Forgot your password?
+                    </a>
                 </div>
             </div>
         </div>
     );
 }
 
-export default LoginUser
+export default LoginCompany
