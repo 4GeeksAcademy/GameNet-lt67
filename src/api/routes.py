@@ -273,6 +273,15 @@ def get_company(company_id):
 
     return jsonify(company.serialize()), 200
 
+@api.route('/posts/company/<int:company_id>', methods=['GET'])
+def get_company_posts_user(company_id):
+    posts = CompanyPost.query.filter_by(id_company=company_id).all()
+    
+    if not posts:
+        return jsonify([]), 200
+        
+    return jsonify([post.serialize() for post in posts]), 200
+
 @api.route('/company/me', methods=['GET']) 
 @jwt_required()
 def get_my_company():

@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 import {
     Search, Bell, User, LogOut, Heart, MessageSquare,
-    UserPen, Gamepad2, ExternalLink, Cpu, Menu, Building2, LayoutDashboard
+    UserPen, Gamepad2, ExternalLink, Cpu, Menu, Building2, LayoutDashboard, Building
 } from 'lucide-react';
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
@@ -117,6 +117,9 @@ export const Navbar = () => {
                                             </Link>
                                             <Link className="dropdown-item-custom" to="/consoles" onClick={() => setShowMainMenu(false)}>
                                                 <Cpu size={16} className="text-success" /> <span>Add Consoles</span>
+                                            </Link>
+                                            <Link className="dropdown-item-custom" to="/companies-list" onClick={() => setShowMainMenu(false)}>
+                                                <Building size={16} className="text-success" /> <span>Companies</span>
                                             </Link>
                                         </div>
                                     </>

@@ -95,7 +95,7 @@ function NewCompanyPost() {
                                     <button type="submit" className="btn-brand-info flex-grow-1 py-3 d-flex align-items-center justify-content-center gap-2">
                                         <Send size={18} /> PUBLISH POST
                                     </button>
-                                    <button type="button" onClick={() => navigate("/")} className="btn btn-outline-secondary px-4">
+                                    <button type="button" onClick={() => navigate("/companypost")} className="btn btn-outline-secondary px-4">
                                         <XCircle size={18} />
                                     </button>
                                 </div>

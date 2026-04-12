@@ -25,7 +25,7 @@ function UpdateCompany() {
                 setEmail(data.email);
                 setDescription(data.description);
                 setWebsite(data.website_url);
-                setLogo(data.logo_img);
+                setLogo(data.logo);
                 setBanner(data.banner_img);
             })
             .catch((error) => console.log(error));
@@ -51,6 +51,7 @@ function UpdateCompany() {
             .catch((error) => console.error(error));
 
         navigate("/company");
+
     }
 
     return (
@@ -73,12 +74,12 @@ function UpdateCompany() {
                 </div>
 
                 <div className="row g-4">
-                    {/* Left Column: Brand Assets Preview */}
+                    
                     <div className="col-lg-4">
                         <div className="admin-card-wrapper p-4 border border-secondary rounded-4 bg-dark-soft h-100 shadow">
                             <h6 className="text-primary fw-bold mb-4 uppercase small tracking-widest">Brand Assets</h6>
                             
-                            {/* Logo Preview */}
+                            
                             <div className="mb-4 text-center">
                                 <label className="text-white-50 small d-block mb-2">Corporate Logo</label>
                                 <div className="logo-preview-box mx-auto rounded-circle d-flex align-items-center justify-content-center border border-secondary overflow-hidden bg-black" style={{ width: '120px', height: '120px' }}>

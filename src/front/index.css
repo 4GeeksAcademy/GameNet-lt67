@@ -2461,3 +2461,155 @@ body {
 .btn-pink-action:hover svg {
     transform: rotate(90deg) scale(1.1);
 }
+
+.footer-gamenet {
+    background-color: #050505;
+    background-image: linear-gradient(to top, rgba(236, 72, 153, 0.03) 0%, transparent 100%);
+}
+
+.border-pink-soft {
+    border-color: rgba(236, 72, 153, 0.15) !important;
+}
+
+.footer-logo-box {
+    width: 32px;
+    height: 32px;
+    background: #ec4899;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
+}
+
+.brand-title-footer {
+    letter-spacing: 1px;
+    color: #fff;
+}
+
+/* Enlaces del Footer */
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: #ec4899;
+    padding-left: 5px;
+}
+
+/* Iconos Sociales */
+.footer-social-icon {
+    color: #6c757d;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.footer-social-icon:hover {
+    color: #ec4899;
+    transform: translateY(-3px);
+}
+
+/* Badge de Estado */
+.status-badge-footer {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #10b981; /* Verde esmeralda */
+    border-radius: 50%;
+    box-shadow: 0 0 8px #10b981;
+    animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.smaller {
+    font-size: 0.75rem;
+}
+
+/* Card de Compañía */
+.gamenet-company-card {
+    background-color: #111111 !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.gamenet-company-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(236, 72, 153, 0.15);
+    border-color: rgba(236, 72, 153, 0.3) !important;
+}
+
+/* Manejo del Banner */
+.company-card-banner {
+    height: 120px;
+    position: relative;
+    overflow: hidden;
+}
+
+.banner-img-card {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.gamenet-company-card:hover .banner-img-card {
+    transform: scale(1.1);
+}
+
+.banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, #111111);
+}
+
+/* Logo superpuesto */
+.company-card-logo-wrapper {
+    position: absolute;
+    top: -40px;
+    left: 25px;
+    z-index: 2;
+}
+
+.company-card-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    border: 4px solid #111111;
+    background-color: #000;
+    object-fit: contain;
+}
+
+/* Utilidades */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+.shadow-neon {
+    box-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
+}

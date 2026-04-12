@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { 
     Share2, Edit3, Eye, Trash2, PlusCircle, 
-    ArrowLeft, Calendar, Tag, MessageSquare, Building, Hash 
+    ArrowLeft, Calendar, Tag, MessageSquare, Building, Hash, Search 
 } from 'lucide-react';
 
 function CompanyPosts() {
     const navigate = useNavigate();
     const [companyPosts, setCompanyPosts] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
 
     async function getCompanyPosts() {
         try {
@@ -39,6 +40,11 @@ function CompanyPosts() {
         }
     }
 
+    const filteredCompanyPosts = companyPosts.filter(posts => 
+        posts.company?.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        posts.id.toString().includes(searchTerm)
+    );
+
     return (
         <div className="admin-page-container py-5 min-vh-100" style={{ backgroundColor: '#0a0a0a' }}>
             <div className="container">
@@ -55,6 +61,17 @@ function CompanyPosts() {
                         </div>
                     </div>
                     
+                    <div className="search-bar-wrapper mb-3">
+                        <Search size={18} className="search-icon" />
+                        <input
+                            type="text"
+                            className="form-control custom-input w-100"
+                            placeholder="Search user..."
+                            autoFocus
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+
                     <button className="btn-login py-2 px-4 d-flex align-items-center gap-2 border-danger " 
                             style={{borderColor: '#dc3545'}}
                             onClick={() => navigate('/new_companypost')}>
@@ -76,8 +93,8 @@ function CompanyPosts() {
                             </tr>
                         </thead>
                         <tbody>
-                            {companyPosts.length > 0 ? (
-                                companyPosts.map((post) => (
+                            {filteredCompanyPosts.length > 0 ? (
+                                filteredCompanyPosts.map((post) => (
                                     <tr key={post.id} className="admin-table-row">
                                         <td className="p-4 fw-mono text-secondary">#{post.id}</td>
                                         <td className="p-4">

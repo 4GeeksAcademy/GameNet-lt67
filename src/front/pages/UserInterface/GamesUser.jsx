@@ -101,7 +101,7 @@ function GamesUser() {
                                     </p>
 
                                     <div className="d-flex gap-3">
-                                        <Link to={"/game/details/" + game.id} className="btn gamenet-btn-ghost flex-grow-1 d-flex align-items-center justify-content-center gap-2">
+                                        <Link to={"/games/" + game.id} className="btn gamenet-btn-ghost flex-grow-1 d-flex align-items-center justify-content-center gap-2">
                                             <Info size={18} /> Details
                                         </Link>
 

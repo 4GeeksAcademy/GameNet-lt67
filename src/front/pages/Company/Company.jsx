@@ -45,8 +45,8 @@ function Company() {
                         bottom: '-75px', 
                         left: '20px' 
                     }}>
-                        {company.logo_img ? (
-                            <img src={company.logo_img} alt="Logo" className="img-fluid" />
+                        {company.logo ? (
+                            <img src={company.logo} alt="Logo" className="img-fluid" />
                         ) : (
                             <Building2 size={60} className="text-dark opacity-25" />
                         )}

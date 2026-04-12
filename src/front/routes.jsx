@@ -61,6 +61,8 @@ import { CompanyDashboard } from "./pages/CompanyInterface/CompanyDashboard";
 import SignUpCompany from "./pages/CompanyInterface/SignUpCompany";
 import { AdminDashboard } from "./pages/AdminDashboard";
 import LoginAdmin from "./pages/AdminFlow/LoginAdmin";
+import { CompanyProfile } from "./pages/UserInterface/CompanyProfile";
+import CompaniesUser from "./pages/UserInterface/CompaniesUser";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -140,6 +142,8 @@ export const router = createBrowserRouter(
         <Route path="/my-likes" element={ <MyLikes />} />
         <Route path="/my-comments" element={ <MyComments />} />
         <Route path="/my-consoles" element={ <MyConsoles />} />
+        <Route path="/company-profile/:companyId" element={ <CompanyProfile />} />
+        <Route path="/companies-list" element={ <CompaniesUser />} />
 
         {/* Company Interface */}
         <Route path="/company/login" element={<LoginCompany />} />
