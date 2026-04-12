@@ -2,7 +2,7 @@ import React, { useState } from "react"; // Añadido useState
 import { Link, useNavigate } from "react-router-dom";
 import {
   Users, Building2, Gamepad2, LayoutGrid, Monitor, Gamepad,
-  Share2, Star, ShieldCheck, ArrowLeft, Terminal, Search
+  Share2, Star, ShieldCheck, ArrowLeft, Terminal, Search, LogOut
 } from 'lucide-react';
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import UserSelectorModal from "../components/UserSelectorModal";
@@ -13,7 +13,16 @@ export const AdminDashboard = () => {
 
   const [modalConfig, setModalConfig] = useState(null);
 
-  // Función de manejo unificada
+  const handleLogout = () => {
+       
+        localStorage.clear();
+        
+        dispatch({ type: "logout" });
+        dispatch({ type: "logout_admin" }); 
+
+        navigate("/login");
+    };
+
   const handleAction = (action) => {
         if (action.action === "openModal") {
             
@@ -32,13 +41,14 @@ export const AdminDashboard = () => {
     { label: "Games", path: "/game", icon: <Gamepad2 size={28} />, color: "text-primary" },
     { label: "Company Posts", path: "/companypost", icon: <Share2 size={28} />, color: "text-danger" },
     { label: "Consoles", path: "/console", icon: <Monitor size={28} />, color: "text-warning" },
-    { label: "Game Consoles", path: "/gameconsole", icon: <LayoutGrid size={28} />, color: "text-info" },
     { label: "Game List", path: "/gameconsolelist", icon: <Terminal size={28} />, color: "text-light" },
     { label: "User Console Favorites",path: "/console/favorites/", action: "openModal", icon: <Star size={28} />, color: "text-warning" },
     { label: "User Game Favorites", path: "/game/favorites/", action: "openModal", icon: <Gamepad size={28} />, color: "text-warning" },
   ];
 
   return (
+    <>
+    {store.auth_admin?
     <div className="admin-dashboard-wrapper py-5 min-vh-100" style={{ backgroundColor: '#0a0a0a' }}>
       <div className="container">
         
@@ -50,11 +60,9 @@ export const AdminDashboard = () => {
               Main Database Management
             </p>
           </div>
-          <Link to="/" className="text-decoration-none">
-            <button className="btn-back-home d-flex align-items-center gap-2">
-              <ArrowLeft size={18} /> BACK TO HOME
+            <button className="btn-back-home d-flex align-items-center gap-2 text-danger" onClick={handleLogout}>
+              <LogOut size={18} /> LOG OUT
             </button>
-          </Link>
         </div>
 
         {/* Grid de Cards */}
@@ -92,5 +100,8 @@ export const AdminDashboard = () => {
             )}
 
     </div>
+    :navigate("/")}
+  </>
   );
+  
 };

@@ -44,15 +44,9 @@ function GameConsole() {
         };
 
         fetch(`${import.meta.env.VITE_BACKEND_URL}/api/gameconsole/${gameId}/${consoleId}`, requestOptions)
-            .then(async (response) => {
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.error || "Linking failed");
-                return data;
-            })
-            .then(() => {
-                navigate("/gameconsole");
-            })
-            .catch((error) => alert(error.message));
+            .then((response) => response.json())
+            .then(() => navigate("/gameconsolelist"))
+            .catch((error) => alert(error.message))
     }
 
     return (
@@ -61,7 +55,7 @@ function GameConsole() {
                 
                 {/* Header */}
                 <div className="d-flex align-items-center gap-3 mb-5">
-                    <button onClick={() => navigate("/admin")} className="btn-back-home border-0 bg-transparent text-secondary">
+                    <button onClick={() => navigate("/gameconsolelist")} className="btn-back-home border-0 bg-transparent text-secondary">
                         <ArrowLeft size={24} />
                     </button>
                     <div>
@@ -123,17 +117,12 @@ function GameConsole() {
                                     </select>
                                 </div>
 
-                                <button type="submit" className="btn-link-action w-100 py-3 d-flex align-items-center justify-content-center gap-2">
+                                <button type="submit" className="btn-link-action w-100 py-3 d-flex align-items-center justify-content-center gap-2" >
                                     <PlusCircle size={18} /> INITIALIZE ASSOCIATION
                                 </button>
                             </form>
                         </div>
 
-                        <div className="text-center mt-4">
-                            <button onClick={() => navigate("/")} className="btn-back-home text-secondary small text-decoration-none bg-transparent border-0">
-                                EXIT TO CORE FEED
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>

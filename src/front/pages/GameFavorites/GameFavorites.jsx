@@ -44,19 +44,8 @@ function GameFavorites() {
         };
 
         fetch(`${import.meta.env.VITE_BACKEND_URL}/api/game/favorites/${userId}/${gameId}`, requestOptions)
-            .then(async (response) => {
-                const data = await response.json();
-                if (!response.ok) {
-                    
-                    alert(data.error || "Error en la petición");
-                    throw new Error(data.error);
-                }
-                return data;
-            })
-            .then((result) => {
-                console.log("Success:", result);
-                navigate("/admin"); 
-            })
+            .then(async (response) => response.json())
+            .then((result) => navigate(-1))
             .catch((error) => console.error("Error detallado:", error));
     }
 
@@ -135,7 +124,7 @@ function GameFavorites() {
                         </div>
 
                         <div className="text-center mt-4">
-                            <button onClick={() => navigate("/")} className="btn-back-home text-secondary small text-decoration-none bg-transparent border-0">
+                            <button onClick={() => navigate("/admin")} className="btn-back-home text-secondary small text-decoration-none bg-transparent border-0">
                                 <Database size={14} className="me-1" /> RETURN TO DATABASE CORE
                             </button>
                         </div>

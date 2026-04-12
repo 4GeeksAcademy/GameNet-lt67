@@ -60,6 +60,7 @@ import LoginCompany from "./pages/CompanyInterface/LoginCompany";
 import { CompanyDashboard } from "./pages/CompanyInterface/CompanyDashboard";
 import SignUpCompany from "./pages/CompanyInterface/SignUpCompany";
 import { AdminDashboard } from "./pages/AdminDashboard";
+import LoginAdmin from "./pages/AdminFlow/LoginAdmin";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -145,6 +146,9 @@ export const router = createBrowserRouter(
         <Route path="/company/signup" element={<SignUpCompany />} />
 
         <Route path="/company/dashboard" element={ <CompanyDashboard />} />
+
+        {/* Admin Interface */}
+        <Route path="/admin/login" element={<LoginAdmin />} />
       </Route>
     )
 );

@@ -45,17 +45,8 @@ function ConsoleFavorites() {
         };
 
         fetch(`${import.meta.env.VITE_BACKEND_URL}/api/console/favorites/${userId}/${consoleId}`, requestOptions)
-            .then(async (response) => {
-                const data = await response.json();
-                if (!response.ok) {
-                    alert(data.error || "Algo salió mal");
-                    throw new Error(data.error);
-                }
-                return data;
-            })
-            .then((result) => {
-                navigate("/console/favorites");
-            })
+            .then(async (response) => response.json())
+            .then((result) => navigate(-1))
             .catch((error) => console.error("Error:", error));
     }
 
@@ -133,7 +124,7 @@ function ConsoleFavorites() {
                                     </select>
                                 </div>
 
-                                <button type="submit" className="btn-brand-info w-100 py-3 d-flex align-items-center justify-content-center gap-2 fw-bold text-uppercase shadow-sm">
+                                <button type="submit" className="btn-brand-info w-100 py-3 d-flex align-items-center justify-content-center gap-2 fw-bold text-uppercase shadow-sm" >
                                     <CheckCircle2 size={18} /> Establish Connection
                                 </button>
                             </form>

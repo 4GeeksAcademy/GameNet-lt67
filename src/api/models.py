@@ -118,7 +118,7 @@ class Game(db.Model):
 
     company = relationship("Company", back_populates="game")
 
-    gameconsole = db.relationship('GameConsole', backref='games', cascade="all, delete-orphan")
+    gameconsole = db.relationship('GameConsole', back_populates='game', cascade="all, delete-orphan")
     gamefavorites = relationship("GameFavorites", back_populates="game", cascade="all, delete-orphan")
 
     def serialize(self):

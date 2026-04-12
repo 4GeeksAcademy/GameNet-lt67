@@ -2217,3 +2217,247 @@ body {
 .bg-success-subtle {
     background-color: rgba(25, 135, 84, 0.1) !important;
 }
+
+/* GameFavorites.css */
+
+/* Fondo principal y tipografía base */
+.admin-page-container {
+    background-color: #0a0a0a;
+    color: #e2e8f0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Título estilo "Brand" */
+.brand-title {
+    color: #ffffff;
+    letter-spacing: 2px;
+    font-weight: 800;
+    text-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+}
+
+.text-pink {
+    color: #ec4899 !important;
+}
+
+/* Contenedor de la tarjeta */
+.admin-card-wrapper {
+    background-color: #111111;
+    border: 1px solid rgba(236, 72, 153, 0.2) !important;
+    transition: all 0.3s ease;
+}
+
+.admin-card-wrapper:hover {
+    border-color: #ec4899 !important;
+    box-shadow: 0 0 30px rgba(236, 72, 153, 0.1);
+}
+
+/* Icono central con aura */
+.icon-favorite-circle {
+    width: 60px;
+    height: 60px;
+    background: rgba(236, 72, 153, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(236, 72, 153, 0.3);
+}
+
+/* Inputs y Selects personalizados */
+.custom-input-dark-pink {
+    background-color: #050505 !important;
+    border: 1px solid #2d2d2d !important;
+    color: #ffffff !important;
+    padding: 12px 15px !important;
+    border-radius: 10px !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+.custom-input-dark-pink:focus {
+    border-color: #ec4899 !important;
+    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.15) !important;
+    outline: none;
+}
+
+/* Estilo para las opciones del select */
+.custom-input-dark-pink option {
+    background-color: #111111;
+    color: #ffffff;
+}
+
+/* Botón de acción principal (Neón) *//* GameFavorites.css */
+
+/* Fondo principal y tipografía base */
+.admin-page-container {
+    background-color: #0a0a0a;
+    color: #e2e8f0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Título estilo "Brand" */
+.brand-title {
+    color: #ffffff;
+    letter-spacing: 2px;
+    font-weight: 800;
+    text-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+}
+
+.text-pink {
+    color: #ec4899 !important;
+}
+
+/* Contenedor de la tarjeta */
+.admin-card-wrapper {
+    background-color: #111111;
+    border: 1px solid rgba(236, 72, 153, 0.2) !important;
+    transition: all 0.3s ease;
+}
+
+.admin-card-wrapper:hover {
+    border-color: #ec4899 !important;
+    box-shadow: 0 0 30px rgba(236, 72, 153, 0.1);
+}
+
+/* Icono central con aura */
+.icon-favorite-circle {
+    width: 60px;
+    height: 60px;
+    background: rgba(236, 72, 153, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(236, 72, 153, 0.3);
+}
+
+/* Inputs y Selects personalizados */
+.custom-input-dark-pink {
+    background-color: #050505 !important;
+    border: 1px solid #2d2d2d !important;
+    color: #ffffff !important;
+    padding: 12px 15px !important;
+    border-radius: 10px !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+
+.custom-input-dark-pink:focus {
+    border-color: #ec4899 !important;
+    box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.15) !important;
+    outline: none;
+}
+
+/* Estilo para las opciones del select */
+.custom-input-dark-pink option {
+    background-color: #111111;
+    color: #ffffff;
+}
+
+/* Botón de acción principal (Neón) */
+
+/* Estilo para el botón CONFIRM FAVORITE */
+.btn-pink-action {
+    background: #ec4899; /* El rosa principal */
+    color: white !important;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+}
+
+.btn-pink-action:hover {
+    background: #db2777; /* Un rosa un poco más oscuro al pasar el mouse */
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(236, 72, 153, 0.6);
+    letter-spacing: 2px; /* Efecto de expansión sutil */
+}
+
+.btn-pink-action:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
+}
+
+/* Efecto de brillo adicional al pasar el mouse */
+.btn-pink-action::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.btn-pink-action:hover::after {
+    opacity: 1;
+}
+
+/* Estilo para el icono dentro del botón */
+.btn-pink-action svg {
+    transition: transform 0.3s ease;
+}
+
+.btn-pink-action:hover svg {
+    transform: rotate(90deg) scale(1.1);
+}/* Estilo para el botón CONFIRM FAVORITE */
+.btn-pink-action {
+    background: #ec4899; /* El rosa principal */
+    color: white !important;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+}
+
+.btn-pink-action:hover {
+    background: #db2777; /* Un rosa un poco más oscuro al pasar el mouse */
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(236, 72, 153, 0.6);
+    letter-spacing: 2px; /* Efecto de expansión sutil */
+}
+
+.btn-pink-action:active {
+    transform: translateY(1px);
+    box-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
+}
+
+/* Efecto de brillo adicional al pasar el mouse */
+.btn-pink-action::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.btn-pink-action:hover::after {
+    opacity: 1;
+}
+
+/* Estilo para el icono dentro del botón */
+.btn-pink-action svg {
+    transition: transform 0.3s ease;
+}
+
+.btn-pink-action:hover svg {
+    transform: rotate(90deg) scale(1.1);
+}

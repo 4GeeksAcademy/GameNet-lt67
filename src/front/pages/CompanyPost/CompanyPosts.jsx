@@ -126,7 +126,7 @@ function CompanyPosts() {
                 </div>
 
                 <div className="mt-4">
-                    <button className="btn-back-home d-flex align-items-center gap-2" onClick={() => navigate('/')}>
+                    <button className="btn-back-home d-flex align-items-center gap-2" onClick={() => navigate('/admin')}>
                          <ArrowLeft size={16} /> RETURN TO PUBLIC FEED
                     </button>
                 </div>

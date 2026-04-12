@@ -81,8 +81,8 @@ function Companies() {
                                         <div className="d-flex align-items-center gap-3">
                                             <div className="company-logo-mini rounded-circle border border-success overflow-hidden d-flex align-items-center justify-content-center bg-black" 
                                                  style={{width: '45px', height: '45px'}}>
-                                                {company.logo_img ? (
-                                                    <img src={company.logo_img} alt="logo" style={{width: '100%', height: '100%', objectFit: 'contain'}} />
+                                                {company.logo ? (
+                                                    <img src={company.logo} alt="logo" style={{width: '100%', height: '100%', objectFit: 'contain'}} />
                                                 ) : (
                                                     <Building2 size={20} className="text-success opacity-50" />
                                                 )}

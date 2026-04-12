@@ -1124,7 +1124,47 @@ def signup_company():
     db.session.add(company)
     db.session.commit()
     response_body = {
-        "message": "User created correctly"
+        "message": "Company created correctly"
+    }
+
+    return jsonify(response_body), 201
+
+
+# =========================
+# ADMIN LOGIN
+# =========================
+
+@api.route('/admin/login', methods=['POST'])
+def login_admin():
+    body = request.get_json()
+    email = body.get("email")
+    password = body.get("password")
+    admin = Administrator.query.filter_by(email=email).first()
+    if admin is None:
+        return jsonify({"message": "Bad email or password"}), 401
+    if password != admin.password:
+        return jsonify({"message": "Bad email or password"}), 401
+
+    access_token = create_access_token(identity=str(admin.id))
+    return jsonify(access_token=access_token), 200
+
+# =========================
+# ADMIN SIGN-UP
+# =========================
+
+
+@api.route('/admin/signup', methods=['POST'])
+def signup_admin():
+    body = request.get_json()
+    admin = Administrator.query.filter_by(email=body["email"]).first()
+    if admin is not None:
+        return jsonify({"message": "This email already exists"}), 401
+
+    admin = Administrator(**body)
+    db.session.add(admin)
+    db.session.commit()
+    response_body = {
+        "message": "Admin created correctly"
     }
 
     return jsonify(response_body), 201
