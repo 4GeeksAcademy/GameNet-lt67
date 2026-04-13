@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Send, Image as ImageIcon, Type, AlertCircle, BadgeCheck, Globe } from "lucide-react";
 import useGlobalReducer from "../../hooks/useGlobalReducer";
-import { PostCard } from "../../components/PostCard";
+import { PostCardCompany } from "../../components/PostCardCompany";
 
 export const CompanyDashboard = () => {
     const { store } = useGlobalReducer();
@@ -246,7 +246,7 @@ export const CompanyDashboard = () => {
                         <div className="d-flex flex-column gap-4">
                             {companyPosts.length > 0 ? (
                                 companyPosts.map((post) => (
-                                    <PostCard
+                                    <PostCardCompany
                                         key={post.id}
                                         id={post.id}
                                         company={post.company}      
@@ -254,7 +254,8 @@ export const CompanyDashboard = () => {
                                         timestamp={post.timestamp}  
                                         stats={post.stats}          
                                         user_liked={post.user_liked}
-                                        data={post}                 
+                                        getpost={fetchMyPosts}
+                                        data={post.id}                 
                                     />
                                 ))
                             ) : (

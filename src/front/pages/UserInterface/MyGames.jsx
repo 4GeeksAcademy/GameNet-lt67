@@ -41,7 +41,7 @@ function MyGames() {
 
     return (
         <div className="container mt-5 mb-5 p-4 favorites-container shadow-lg">
-            {/* Header */}
+           
             <div className="d-flex justify-content-between align-items-center mb-5">
                 <h2 className="m-0 d-flex align-items-center gap-3 text-white">
                     <div className="logo-box" style={{width: '40px', height: '40px', fontSize: '20px'}}>
@@ -54,15 +54,14 @@ function MyGames() {
                 </button>
             </div>
 
-            {/* Grid de Juegos */}
+            
             <div className="row">
                 {gameFavorites.length > 0 ? (
                     gameFavorites.map((fav) => (
                         <div key={fav.id} className="col-12 col-md-6 col-lg-4 mb-4">
                             <div className="card game-card-custom h-100 shadow-sm overflow-hidden">
-                                
-                                {/* Imagen del Juego con Link */}
-                                <Link to={"/game/details/" + fav.game_id} className="text-decoration-none">
+                               
+                                <Link to={"/games/" + fav.game_id} className="text-decoration-none">
                                     <div className="position-relative">
                                         <img 
                                             src={fav.game_image || "https://via.placeholder.com/400x200?text=No+Image"} 

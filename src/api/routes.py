@@ -6,7 +6,7 @@ from api.models import db, User, Administrator, Company, Game, CompanyPost, Cons
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy.orm import joinedload
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, verify_jwt_in_request
 
 
 api = Blueprint('api', __name__)
@@ -386,9 +386,26 @@ def get_company_posts():
 
 @api.route('/game', methods=['GET'])
 def get_games():
+    games = Game.query.all()
+    user_id = None
+  
+    try:
+        verify_jwt_in_request(optional=True)
+        user_id = get_jwt_identity()
+    except:
+        pass
 
-    all_games = Game.query.all()
-    results = list(map(lambda game: game.serialize(), all_games))
+    results = []
+    for game in games:
+        game_data = game.serialize() 
+   
+        if user_id:
+            is_fav = GameFavorites.query.filter_by(user_id=user_id, game_id=game.id).first() is not None
+            game_data["is_favorite"] = is_fav
+        else:
+            game_data["is_favorite"] = False
+            
+        results.append(game_data)
 
     return jsonify(results), 200
 
@@ -433,6 +450,42 @@ def delete_game(game_id):
             "error": "Cannot delete game. It is probably linked to favorites or consoles."
         }), 409 
 
+@api.route('/game/<int:game_id>/favorites', methods=['POST'])
+@jwt_required()
+def handle_favorites_user(game_id):
+
+    user_id = get_jwt_identity() 
+
+
+    game = Game.query.get(game_id)
+    if not game:
+        return jsonify({"msg": "Game not found"}), 404
+
+    existing_favorite = GameFavorites.query.filter_by(
+        user_id=user_id, 
+        game_id=game_id
+    ).first()
+
+    if existing_favorite:
+        db.session.delete(existing_favorite)
+        db.session.commit()
+        return jsonify({
+            "msg": "Favorite removed", 
+            "is_favorite": False 
+        }), 200
+
+    new_favorite = GameFavorites(user_id=user_id, game_id=game_id)
+    
+    try:
+        db.session.add(new_favorite)
+        db.session.commit()
+        return jsonify({
+            "msg": "Game added to favorites", 
+            "is_favorite": True
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"msg": "Error saving favorite", "error": str(e)}), 500
 
 @api.route('/game', methods=['POST'])
 def create_game():
@@ -1082,6 +1135,7 @@ def search_everything():
     games = Game.query.filter(Game.name.ilike(search_pattern)).limit(5).all()
     consoles = Console.query.filter(
         Console.name.ilike(search_pattern)).limit(5).all()
+    companies = Company.query.filter(Company.name.ilike(search_pattern)).limit(5).all()
 
     results = []
 
@@ -1095,8 +1149,14 @@ def search_everything():
         data["type"] = "consoles"
         results.append(data)
 
+    for com in companies:
+        data = com.serialize()
+        data["type"] = "companies"
+        results.append(data)
+
     return jsonify({"games": [r for r in results if r["type"] == "games"],
-                    "consoles": [r for r in results if r["type"] == "consoles"]})
+                    "consoles": [r for r in results if r["type"] == "consoles"],
+                    "companies": [r for r in results if r["type"] == "companies"]})
 
 
 # =========================
