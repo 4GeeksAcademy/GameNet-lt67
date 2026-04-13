@@ -83,7 +83,7 @@ export const Layout = () => {
         <ScrollToTop>
             <Navbar />
                 <Outlet />
-            <Footer />
+            {(store.auth || store.auth_company) && <Footer />}
         </ScrollToTop>
     )
 }

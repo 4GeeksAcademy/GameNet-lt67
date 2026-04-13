@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { 
     Building2, Mail, Edit3, Eye, Trash2, PlusSquare, 
-    ArrowLeft, Globe, Image as ImageIcon, Hash 
+    ArrowLeft, Globe, Image as ImageIcon, Hash, Search 
 } from 'lucide-react';
 
 function Companies() {
     const navigate = useNavigate();
     const [companies, setCompanies] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
 
     async function getCompanies() {
         try {
@@ -38,6 +39,11 @@ function Companies() {
             .catch((error) => console.error(error));
     }
 
+    const filteredCompanies = companies.filter(company => 
+        company.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        company.id.toString().includes(searchTerm)
+    );
+
     return (
         <div className="admin-page-container py-5 min-vh-100" style={{ backgroundColor: '#0a0a0a' }}>
             <div className="container">
@@ -52,6 +58,17 @@ function Companies() {
                             <h2 className="brand-title h3 mb-0">PARTNER DIRECTORY</h2>
                             <p className="text-success small fw-bold mb-0">Verified Game Studios</p>
                         </div>
+                    </div>
+
+                    <div className="search-bar-wrapper mb-3">
+                        <Search size={18} className="search-icon" />
+                        <input
+                            type="text"
+                            className="form-control custom-input w-100"
+                            placeholder="Search user..."
+                            autoFocus
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
                     </div>
                     
                     <button className="btn-login py-2 px-4 d-flex align-items-center gap-2 border-success" 
@@ -74,7 +91,7 @@ function Companies() {
                             </tr>
                         </thead>
                         <tbody>
-                            {companies.map((company) => (
+                            {filteredCompanies.map((company) => (
                                 <tr key={company.id} className="admin-table-row">
                                     <td className="p-4 fw-mono text-secondary">#{company.id}</td>
                                     <td className="p-4">

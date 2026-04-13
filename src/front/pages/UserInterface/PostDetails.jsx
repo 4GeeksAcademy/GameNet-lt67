@@ -52,7 +52,7 @@ function PostDetails() {
     if (!companyPost) return (
         <div className="container text-center mt-5 text-white">
             <h3>Post not found</h3>
-            <button onClick={() => navigate("/")} className="btn btn-primary mt-3">Go to Home</button>
+            <button onClick={() => navigate("/")} className="btn btn-gradient mt-3">Go to Home</button>
         </div>
     );
 
@@ -71,6 +71,7 @@ function PostDetails() {
 
                     <PostCard
                         id={companyPost.id}
+                        data={companyPost.id}
                         company={companyPost.company}
                         content={companyPost.content}
                         timestamp={companyPost.timestamp}

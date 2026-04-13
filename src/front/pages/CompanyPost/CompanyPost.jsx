@@ -27,7 +27,7 @@ function CompanyPost() {
     <div className="admin-page-container py-5 min-vh-100" style={{ backgroundColor: '#0a0b0d' }}>
       <div className="container">
 
-        {/* Botón Volver y Título */}
+        
         <div className="d-flex align-items-center gap-3 mb-5">
           <button
             onClick={() => navigate("/companypost")}
@@ -44,11 +44,11 @@ function CompanyPost() {
         </div>
 
         <div className="row g-4">
-          {/* Tarjeta de Detalles del Post */}
+          
           <div className="col-lg-8 mx-auto">
             <div className="admin-card-wrapper border border-secondary-subtle rounded-4 bg-dark-soft overflow-hidden shadow-lg">
 
-              {/* Header de la tarjeta con Metadatos */}
+              
               <div className="p-4 border-bottom border-secondary d-flex flex-wrap justify-content-between align-items-center gap-3 bg-black-25">
                 <div className="d-flex align-items-center gap-3">
                   <div className="p-2 bg-info-subtle rounded-3">
@@ -65,12 +65,12 @@ function CompanyPost() {
                   </div>
                   <div>
                     <span className="text-white-50 d-block x-small fw-bold">PUBLISHED ON</span>
-                    <span className="text-white fw-bold">{companyPost.post_date || "N/A"}</span>
+                    <span className="text-white fw-bold">{companyPost?.timestamp || "N/A"}</span>
                   </div>
                 </div>
               </div>
 
-              {/* Imagen Destacada */}
+            
               <div className="post-detail-media" style={{ maxHeight: '450px', overflow: 'hidden', backgroundColor: '#000' }}>
                 {companyPost?.content?.image ? (
                   <img
@@ -86,7 +86,7 @@ function CompanyPost() {
                 )}
               </div>
 
-              {/* Contenido */}
+              
               <div className="p-4 p-lg-5">
                 <div className="d-flex align-items-center gap-2 mb-4">
                   <span className="badge rounded-pill bg-info text-dark px-3 py-2 fw-bold text-uppercase">
@@ -108,7 +108,7 @@ function CompanyPost() {
                 </div>
               </div>
 
-              {/* Footer de Acción */}
+             
               <div className="p-4 bg-dark border-top border-secondary d-flex justify-content-between align-items-center">
                 <button onClick={() => navigate("/companypost")} className="btn btn-link text-info text-decoration-none fw-bold d-flex align-items-center gap-2">
                   <ArrowLeft size={16} /> BACK TO NEWSFEED

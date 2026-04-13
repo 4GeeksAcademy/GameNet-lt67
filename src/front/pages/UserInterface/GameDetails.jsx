@@ -43,7 +43,6 @@ function GameDetails() {
             <div className="game-detail-container text-white">
                 <div className="row g-5">
 
-                    {/* Columna Izquierda: Portada y Stats Rápidos */}
                     <div className="col-lg-4 text-center">
                         <img
                             src={game.cover_img}

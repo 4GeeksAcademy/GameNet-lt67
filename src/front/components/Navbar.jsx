@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 import {
     Search, Bell, User, LogOut, Heart, MessageSquare,
-    UserPen, Gamepad2, ExternalLink, Cpu, Menu, Building2, LayoutDashboard
+    UserPen, Gamepad2, ExternalLink, Cpu, Menu, Building2, LayoutDashboard, Building
 } from 'lucide-react';
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 
@@ -16,7 +16,7 @@ export const Navbar = () => {
     const [isSearching, setIsSearching] = useState(false);
 
     const [showUserMenu, setShowUserMenu] = useState(false);
-    const [showMainMenu, setShowMainMenu] = useState(false); 
+    const [showMainMenu, setShowMainMenu] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
     const [latestPost, setLatestPost] = useState(null);
 
@@ -41,7 +41,7 @@ export const Navbar = () => {
                     if (resp.ok) {
                         const data = await resp.json();
 
-                        setSearchResults([...data.games, ...data.consoles]);
+                        setSearchResults([...data.games, ...data.consoles, ...data.companies]);
                     }
                 } catch (error) {
                     console.error("Search error:", error);
@@ -65,7 +65,7 @@ export const Navbar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem("token");
-        localStorage.removeItem("token_company"); 
+        localStorage.removeItem("token_company");
         dispatch({ type: "logout" });
         dispatch({ type: "logout_company" });
         navigate("/login");
@@ -79,10 +79,13 @@ export const Navbar = () => {
         if (type === "consoles") {
             navigate(`/${type}`);
             return;
+        } else if (type === "companies") {
+            navigate(`/company-profile/${id}`)
+        } else {
+            navigate(`/${type}/${id}`);
         }
 
-
-        navigate(`/${type}/${id}`);
+        
     };
 
     return (
@@ -118,6 +121,9 @@ export const Navbar = () => {
                                             <Link className="dropdown-item-custom" to="/consoles" onClick={() => setShowMainMenu(false)}>
                                                 <Cpu size={16} className="text-success" /> <span>Add Consoles</span>
                                             </Link>
+                                            <Link className="dropdown-item-custom" to="/companies-list" onClick={() => setShowMainMenu(false)}>
+                                                <Building size={16} className="text-success" /> <span>Companies</span>
+                                            </Link>
                                         </div>
                                     </>
                                 )}
@@ -143,7 +149,7 @@ export const Navbar = () => {
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
 
-                     
+
                             {isSearching && (
                                 <div className="position-absolute end-0 top-50 translate-middle-y me-3">
                                     <div className="spinner-border spinner-border-sm text-info" role="status" style={{ width: '1rem', height: '1rem' }}>
@@ -163,12 +169,17 @@ export const Navbar = () => {
                                                 onClick={() => handleSelectResult(item.type, item.id)}
                                             >
                                                 {item.type === "consoles" ? (
-                                                    
                                                     <div className="p-2 rounded bg-secondary bg-opacity-25">
                                                         <Cpu size={20} className="text-success" />
                                                     </div>
+                                                ) : item.type === "companies" ? (
+                                                    <img
+                                                        src={item.logo}
+                                                        alt={item.name}
+                                                        className="result-img"
+                                                        style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '6px' }}
+                                                    />
                                                 ) : (
-                                                    
                                                     <img
                                                         src={item.cover_img}
                                                         alt={item.name}
@@ -185,7 +196,7 @@ export const Navbar = () => {
                                             </div>
                                         ))
                                     ) : (
-                                       
+
                                         searchQuery.length > 2 && !isSearching && (
                                             <div className="p-3 text-center text-secondary small">
                                                 No matches found for "{searchQuery}"
@@ -196,9 +207,9 @@ export const Navbar = () => {
                             )}
                         </div>
 
-                        
+
                         <div className="d-flex align-items-center gap-2">
-                            
+
                             <div className="position-relative">
                                 <button
                                     className={`btn-icon ${showNotifications ? 'active' : ''}`}
@@ -243,7 +254,7 @@ export const Navbar = () => {
                                 )}
                             </div>
 
-                            
+
                             <div className="position-relative">
                                 <button className={`btn-icon ${showUserMenu ? 'active' : ''}`} onClick={() => { setShowUserMenu(!showUserMenu); setShowNotifications(false); setShowMainMenu(false); }}>
                                     <User size={22} />
@@ -262,7 +273,7 @@ export const Navbar = () => {
                                         </div>
                                     </>
                                 )}
-                                
+
                             </div>
                         </div>
                     </div>
@@ -272,48 +283,48 @@ export const Navbar = () => {
             {store.auth_company && (
                 <nav className="navbar navbar-expand-lg custom-header sticky-top p-0 border-bottom border-info border-opacity-25">
                     <div className="container" style={{ height: '70px' }}>
-                        
-                        
+
+
                         <div className="d-flex align-items-center gap-3">
                             <Link className="navbar-brand d-flex align-items-center gap-3 m-0" to="/company/dashboard">
                                 <div className="logo-box-wrapper">
                                     <div className="logo-glow" style={{ background: 'linear-gradient(45deg, #00dbde, #fc00ff)' }}></div>
                                     <div className="logo-box"><Building2 size={20} className="text-white" /></div>
                                 </div>
-                                <span className="brand-title d-none d-sm-inline">GameNet <small className="text-info" style={{fontSize: '0.6rem'}}>CORP</small></span>
+                                <span className="brand-title d-none d-sm-inline">GameNet <small className="text-info" style={{ fontSize: '0.6rem' }}>CORP</small></span>
                             </Link>
                         </div>
 
-                       
+
                         <div className="d-none d-md-flex align-items-center gap-4 mx-auto">
                             <Link to="/company/dashboard" className="text-decoration-none text-secondary small fw-bold hover-info">
-                                <LayoutDashboard size={16} className="me-1"/> ANALYTICS
+                                <LayoutDashboard size={16} className="me-1" /> ANALYTICS
                             </Link>
                         </div>
 
-                        
+
                         <div className="d-flex align-items-center gap-3">
                             <div className="position-relative">
-                                <button 
-                                    className={`btn-icon ${showUserMenu ? 'active' : ''}`} 
+                                <button
+                                    className={`btn-icon ${showUserMenu ? 'active' : ''}`}
                                     onClick={() => setShowUserMenu(!showUserMenu)}
                                 >
-                                    <Building2/>
+                                    <Building2 />
                                 </button>
 
                                 {showUserMenu && (
                                     <>
                                         <div className="position-fixed top-0 start-0 w-100 h-100" onClick={() => setShowUserMenu(false)} style={{ zIndex: 998 }}></div>
-                                        <div className="user-dropdown-menu animate-fade-in shadow-lg border border-secondary" 
-                                             style={{ position: 'absolute', top: '100%', right: 0, zIndex: 999, backgroundColor: '#1a1a1a', minWidth: '220px', borderRadius: '12px', marginTop: '10px', padding: '8px' }}>
-                                            
+                                        <div className="user-dropdown-menu animate-fade-in shadow-lg border border-secondary"
+                                            style={{ position: 'absolute', top: '100%', right: 0, zIndex: 999, backgroundColor: '#1a1a1a', minWidth: '220px', borderRadius: '12px', marginTop: '10px', padding: '8px' }}>
+
                                             <div className="px-3 py-2 border-bottom border-secondary mb-2">
                                                 <p className="text-white small mb-0 fw-bold">{store.company?.name}</p>
                                                 <p className="text-secondary mb-0" style={{ fontSize: '0.7rem' }}>Business Account</p>
                                             </div>
 
-                        
-                                            
+
+
                                             <button className="dropdown-item-custom text-danger" onClick={handleLogout}>
                                                 <LogOut size={16} /> <span>Logout Business</span>
                                             </button>

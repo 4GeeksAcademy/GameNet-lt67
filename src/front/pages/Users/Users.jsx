@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { 
-    User, Mail, Edit3, Eye, Trash2, UserPlus, 
-    ArrowLeft, Shield, Hash 
+import {
+    User, Mail, Edit3, Eye, Trash2, UserPlus,
+    ArrowLeft, Shield, Hash, Search
 } from 'lucide-react';
 
 function Users() {
     const navigate = useNavigate();
     const [users, setUsers] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
 
     async function getUsers() {
         try {
@@ -25,7 +26,7 @@ function Users() {
 
     function deleteUser(id) {
         if (!window.confirm("¿Are you sure you want to delete this user?")) return;
-        
+
         const requestOptions = {
             method: "DELETE",
             redirect: "follow"
@@ -38,10 +39,15 @@ function Users() {
             .catch((error) => console.error(error));
     }
 
+    const filteredUsers = users.filter(user => 
+        user.nickname?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        user.id.toString().includes(searchTerm)
+    );
+
     return (
         <div className="admin-page-container py-5 min-vh-100" style={{ backgroundColor: '#0a0a0a' }}>
             <div className="container">
-                
+
                 {/* Header con acciones rápidas */}
                 <div className="d-flex align-items-center justify-content-between mb-4">
                     <div className="d-flex align-items-center gap-3">
@@ -53,13 +59,24 @@ function Users() {
                             <p className="text-info small fw-bold mb-0">System Authority Mode</p>
                         </div>
                     </div>
-                    
+
+                    <div className="search-bar-wrapper mb-3">
+                        <Search size={18} className="search-icon" />
+                        <input
+                            type="text"
+                            className="form-control custom-input w-100"
+                            placeholder="Search user..."
+                            autoFocus
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+
                     <button className="btn-login py-2 px-4 d-flex align-items-center gap-2" onClick={() => navigate('/new_user')}>
                         <UserPlus size={18} /> New User
                     </button>
                 </div>
 
-               
+
                 <div className="admin-table-wrapper border border-info rounded-4 overflow-hidden shadow-lg">
                     <table className="table table-dark table-hover mb-0 align-middle">
                         <thead className="bg-black border-bottom border-info">
@@ -71,7 +88,7 @@ function Users() {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map((user) => (
+                            {filteredUsers.map((user) => (
                                 <tr key={user.id} className="admin-table-row">
                                     <td className="p-4 fw-mono text-secondary">#{user.id}</td>
                                     <td className="p-4">
@@ -95,7 +112,7 @@ function Users() {
                             ))}
                         </tbody>
                     </table>
-                    
+
                     {users.length === 0 && (
                         <div className="text-center py-5">
                             <p className="text-secondary">No users detected in the database.</p>

@@ -29,7 +29,7 @@ function LoginAdmin() {
         if (response.ok) {
             const data = await response.json();
 
-            // Guardamos persistencia
+        
             localStorage.setItem("auth_admin", "true");
             localStorage.setItem("token_admin", data.access_token);
             localStorage.setItem("role", "admin");

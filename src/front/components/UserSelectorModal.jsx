@@ -22,7 +22,7 @@ const UserSelectorModal = ({ onClose, targetPath, title }) => {
     }, []);
 
     const filteredUsers = users.filter(user => 
-        user.name?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        user.nickname?.toLowerCase().includes(searchTerm.toLowerCase()) || 
         user.id.toString().includes(searchTerm)
     );
 
@@ -63,7 +63,7 @@ const UserSelectorModal = ({ onClose, targetPath, title }) => {
                                 <User size={14} className="text-info" />
                             </div>
                             <div className="flex-grow-1">
-                                <div className="text-white small fw-bold">{user.name}</div>
+                                <div className="text-white small fw-bold">{user.nickname}</div>
                                 <div className="text-secondary" style={{ fontSize: '10px' }}>ID: {user.id}</div>
                             </div>
                             <ChevronRight size={14} className="text-secondary opacity-50" />
