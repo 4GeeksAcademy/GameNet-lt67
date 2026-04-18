@@ -109,7 +109,7 @@ function GamesUser() {
 
                                     <button
                                         className={`btn flex-grow-1 d-flex align-items-center justify-content-center gap-2 ${
-                                            game.is_favorite ? 'btn-favorite-active' : 'gamenet-btn-primary'
+                                            game.is_favorite ? 'gamenet-btn-primary' : 'btn-favorite-active'
                                         }`}
                                         onClick={() => toggleFavorite(game.id)}
                                     >
