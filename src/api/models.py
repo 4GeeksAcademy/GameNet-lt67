@@ -64,7 +64,8 @@ class Company(db.Model):
             "website_url": self.website_url,
             "logo": self.logo,
             "banner_img": self.banner_img,
-            "verified": self.verified
+            "verified": self.verified,
+            "type": "companies"
             # do not serialize the password, its a security breach
         }
     
@@ -107,7 +108,7 @@ class CompanyPost(db.Model):
     
 class Game(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    id_company: Mapped[int] = mapped_column(ForeignKey("company.id"), nullable=False)
+    id_company: Mapped[int] = mapped_column(ForeignKey("company.id"))
     name: Mapped[str] = mapped_column(String(200))
     trailer_url: Mapped[str] = mapped_column(Text, nullable=True)
     release_date: Mapped[str] = mapped_column(Text, nullable=True)
@@ -148,7 +149,8 @@ class Console(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "price": self.price
+            "price": self.price,
+            "type": "consoles"
             # do not serialize the password, its a security breach
         }
 

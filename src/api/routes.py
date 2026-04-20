@@ -1,18 +1,28 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+from flask_jwt_extended import jwt_required, get_jwt_identity
+# Asegúrate de importar Company también
+from api.models import db, Game, Company
+from flask import Flask, request, jsonify, Blueprint
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User, Administrator, Company, Game, CompanyPost, Console, GameConsole, ConsoleFavorites, GameFavorites, PostLike, PostComment
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from sqlalchemy.orm import joinedload
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, verify_jwt_in_request
-
+import os
+import requests
+import google.generativeai as genai
+import json
+from sqlalchemy import func
 
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
-CORS(api)
+CORS(api, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"), transport='rest')
 
 
 @api.route('/hello', methods=['POST', 'GET'])
@@ -26,8 +36,86 @@ def handle_hello():
 
 
 # =========================
+# GEMINI
+# =========================
+
+@api.route('/ai-recommendations', methods=['GET'])
+@jwt_required()
+def get_ai_recommendations():
+    data = None
+    try:
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        api_key = os.getenv("GEMINI_API_KEY")
+
+        if not user:
+            return jsonify({"msg": "User not found"}), 404
+        if not api_key:
+            return jsonify({"error": "Missing API Key"}), 500
+
+        # User context
+        fav_consoles = [
+            f.console.name for f in user.consolefavorites if f.console]
+        owned_ids = [f.game_id for f in user.gamefavorites]
+        all_games = Game.query.all()
+
+        # Catalog for the prompt
+        db_catalog = [{"id": g.id, "name": g.name}
+                      for g in all_games if g.id not in owned_ids][:15]
+
+        # --- REQUEST TO GEMINI 2.5 FLASH ---
+        url = f"https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key={api_key}"
+
+        payload = {
+            "contents": [{
+                "parts": [{
+                    "text": f"Generate a JSON object with 3 game IDs from this list: {db_catalog}. User likes {fav_consoles}. Return ONLY a JSON with this structure: {{\"recommendations\": [id1, id2, id3], \"message\": \"a short friendly recommendation message in English\"}}"
+                }]
+            }]
+        }
+
+        headers = {'Content-Type': 'application/json'}
+        response = requests.post(url, json=payload, headers=headers)
+        data = response.json()
+
+        if "error" in data:
+            return jsonify({"error_detail": data["error"]["message"], "message": "Google Model Access Error"}), 500
+
+        # Extracting response
+        ai_text = data['candidates'][0]['content']['parts'][0]['text'].strip()
+
+        # Markdown Cleaning
+        if "```" in ai_text:
+            ai_text = ai_text.split("```")[-2].replace("json", "").strip()
+
+        ai_data = json.loads(ai_text)
+        recommended_ids = [int(i) for i in ai_data.get("recommendations", [])]
+
+        # Fetching games from DB
+        games_objs = Game.query.filter(Game.id.in_(recommended_ids)).all()
+
+        return jsonify({
+            "recommendations": [
+                {
+                    "id": g.id,
+                    "name": g.name,
+                    "image": getattr(g, 'cover_img', None) or getattr(g, 'image', None)
+                } for g in games_objs
+            ],
+            "message": ai_data.get("message", "Recommendations ready!")
+        }), 200
+
+    except Exception as e:
+        print(f"DEBUG_ERROR: {str(e)}")
+        return jsonify({
+            "error_detail": str(e),
+            "message": "Server error while processing AI response"
+        }), 500
+
+# =========================
 # CRUD ADMINISTRATOR
 # =========================
+
 
 @api.route('/administrator', methods=['GET'])
 def get_administrators():
@@ -190,21 +278,20 @@ def get_current_user():
 def delete_user(user_id):
     # 1. Buscar al usuario
     user = User.query.filter_by(id=user_id).first()
-    
+
     if user is None:
         return jsonify({
             "error": "User not found"
-        }), 404 
+        }), 404
 
-  
-    temp_name = user.nickname 
+    temp_name = user.nickname
 
     try:
-  
+
         db.session.delete(user)
         db.session.commit()
         return jsonify({"message": f"User {temp_name} deleted successfully."}), 200
-    
+
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Could not delete user. Check for related favorites."}), 500
@@ -273,23 +360,25 @@ def get_company(company_id):
 
     return jsonify(company.serialize()), 200
 
+
 @api.route('/posts/company/<int:company_id>', methods=['GET'])
 def get_company_posts_user(company_id):
     posts = CompanyPost.query.filter_by(id_company=company_id).all()
-    
+
     if not posts:
         return jsonify([]), 200
-        
+
     return jsonify([post.serialize() for post in posts]), 200
 
-@api.route('/company/me', methods=['GET']) 
+
+@api.route('/company/me', methods=['GET'])
 @jwt_required()
 def get_my_company():
 
     company_id = get_jwt_identity()
-    
+
     company = Company.query.get(company_id)
-    
+
     if company is None:
         return jsonify({"msg": "Company not found"}), 404
 
@@ -298,30 +387,30 @@ def get_my_company():
 
 @api.route('/company/<int:company_id>', methods=['DELETE'])
 def delete_company(company_id):
-    
-    company = Company.query.get(company_id) 
-    
+
+    company = Company.query.get(company_id)
+
     if company is None:
         return jsonify({"error": "Company not found"}), 404
 
-    
-    company_name = company.name 
+    company_name = company.name
 
     try:
-       
+
         db.session.delete(company)
         db.session.commit()
-        
+
         return jsonify({
             "message": f"Company '{company_name}' and its relations were deleted successfully."
         }), 200
 
     except Exception as e:
-      
+
         db.session.rollback()
         return jsonify({
             "error": "Cannot delete company. Verify if there are games linked to this provider."
-        }), 409 
+        }), 409
+
 
 @api.route('/company', methods=['POST'])
 def create_company():
@@ -358,25 +447,27 @@ def update_company(company_id):
     company.email = body.get('email', company.email)
     company.description = body.get('description', company.description)
     company.website_url = body.get('website_url', company.website_url)
-    company.logo_img = body.get('logo_img', company.logo_img)
+    company.logo = body.get('logo', company.logo)
     company.banner_img = body.get('banner_img', company.banner_img)
+    company.verified = body.get("verified", company.verified) if "verified" in body else company.verified
 
     db.session.commit()
 
     return jsonify(company.serialize()), 200
 
+
 @api.route('/company/posts', methods=['GET'])
 @jwt_required()
 def get_company_posts():
-    
+
     current_company_id = int(get_jwt_identity())
-    
- 
-    posts = CompanyPost.query.filter_by(id_company=current_company_id).order_by(CompanyPost.id.desc()).all()
+
+    posts = CompanyPost.query.filter_by(
+        id_company=current_company_id).order_by(CompanyPost.id.desc()).all()
 
     if not posts:
         return jsonify([]), 200
-        
+
     return jsonify([p.serialize() for p in posts]), 200
 
 # =========================
@@ -388,7 +479,7 @@ def get_company_posts():
 def get_games():
     games = Game.query.all()
     user_id = None
-  
+
     try:
         verify_jwt_in_request(optional=True)
         user_id = get_jwt_identity()
@@ -397,72 +488,81 @@ def get_games():
 
     results = []
     for game in games:
-        game_data = game.serialize() 
-   
+        game_data = game.serialize()
+
         if user_id:
-            is_fav = GameFavorites.query.filter_by(user_id=user_id, game_id=game.id).first() is not None
+            is_fav = GameFavorites.query.filter_by(
+                user_id=user_id, game_id=game.id).first() is not None
             game_data["is_favorite"] = is_fav
         else:
             game_data["is_favorite"] = False
-            
+
         results.append(game_data)
 
     return jsonify(results), 200
 
 
 @api.route('/game/<int:game_id>', methods=['GET'])
-def get_game(game_id):
+def get_game_detail(game_id):
+    verify_jwt_in_request(optional=True)
+    user_id = get_jwt_identity()
 
-    game = Game.query.filter_by(id=game_id).first()
-    if game is None:
-        return jsonify({
-            "error": "Game not found"
-        }), 400
+    game = Game.query.get(game_id)
+    if not game:
+        return jsonify({"msg": "Game not found"}), 404
 
-    return jsonify(game.serialize()), 200
+    game_data = game.serialize()
+
+    if user_id:
+        is_fav = GameFavorites.query.filter_by(
+            user_id=user_id, game_id=game_id).first() is not None
+        game_data["is_favorite"] = is_fav
+    else:
+        game_data["is_favorite"] = False
+
+    return jsonify(game_data), 200
 
 
 @api.route('/game/<int:game_id>', methods=['DELETE'])
 def delete_game(game_id):
-    
+
     game = Game.query.get(game_id)
-    
+
     if game is None:
         return jsonify({"error": "Game not found"}), 404
 
-    
-    game_title = game.name 
+    game_title = game.name
 
     try:
-       
+
         db.session.delete(game)
         db.session.commit()
-        
+
         return jsonify({
             "message": f"Game '{game_title}' deleted successfully."
         }), 200
 
     except Exception as e:
-        
+
         db.session.rollback()
-        print(f"Error detectado: {str(e)}") 
+        print(f"Error detectado: {str(e)}")
         return jsonify({
             "error": "Cannot delete game. It is probably linked to favorites or consoles."
-        }), 409 
+        }), 409
+
 
 @api.route('/game/<int:game_id>/favorites', methods=['POST'])
 @jwt_required()
 def handle_favorites_user(game_id):
 
-    user_id = get_jwt_identity() 
-
+    user_id = get_jwt_identity()
 
     game = Game.query.get(game_id)
     if not game:
         return jsonify({"msg": "Game not found"}), 404
 
     existing_favorite = GameFavorites.query.filter_by(
-        user_id=user_id, 
+        user_id=user_id,
         game_id=game_id
     ).first()
 
@@ -470,42 +570,22 @@ def handle_favorites_user(game_id):
         db.session.delete(existing_favorite)
         db.session.commit()
         return jsonify({
-            "msg": "Favorite removed", 
-            "is_favorite": False 
+            "msg": "Favorite removed",
+            "is_favorite": False
         }), 200
 
     new_favorite = GameFavorites(user_id=user_id, game_id=game_id)
-    
+
     try:
         db.session.add(new_favorite)
         db.session.commit()
         return jsonify({
-            "msg": "Game added to favorites", 
+            "msg": "Game added to favorites",
             "is_favorite": True
         }), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"msg": "Error saving favorite", "error": str(e)}), 500
-
-@api.route('/game', methods=['POST'])
-def create_game():
-
-    body = request.get_json()
-    game = Game.query.filter_by(name=body['name']).first()
-
-    if game:
-        return jsonify({
-            "error": "This game already exists"
-        }), 401
-
-    game = Game(**body)
-    db.session.add(game)
-    db.session.commit()
-
-    response_body = {
-        "message": "New Game created"
-    }
-    return jsonify(response_body), 200
 
 
 @api.route('/game/<int:game_id>', methods=['PUT'])
@@ -531,9 +611,46 @@ def update_game(game_id):
     return jsonify(game.serialize()), 200
 
 
+@api.route('/game', methods=['POST'])
+@jwt_required()
+def create_game():
+    body = request.get_json()
+
+    if not body or 'name' not in body:
+        return jsonify({"error": "The name of the game is mandatory"}), 400
+
+    game_exists = Game.query.filter_by(name=body.get('name')).first()
+
+    if game_exists:
+
+        return jsonify(game_exists.serialize()), 200
+
+    try:
+        new_game = Game(
+            name=body.get('name'),
+            cover_img=body.get('cover_img'),
+            description=body.get('description', 'No description'),
+            id_company=body.get('id_company', 1),
+            release_date=body.get('release_date'),
+            trailer_url=body.get('trailer_url'),
+            current_players=body.get('current_players', 1000000),
+            total_sales=8000000000
+        )
+
+        db.session.add(new_game)
+        db.session.commit()
+
+        return jsonify(new_game.serialize()), 201
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error en el servidor: {str(e)}")
+        return jsonify({"error": "No se pudo crear el juego", "details": str(e)}), 500
+
 # =========================
 # CRUD COMPANY POST
 # =========================
+
 
 @api.route('/posts', methods=['GET'])
 def get_all_posts():
@@ -544,16 +661,17 @@ def get_all_posts():
 
     return jsonify(results), 200
 
+
 @api.route('/post/admin/<int:companypost_id>', methods=['GET'])
 def get_post_admin(companypost_id):
-    
+
     companypost = CompanyPost.query.filter_by(id=companypost_id).first()
-    
-  
+
     if companypost is None:
         return jsonify({"msg": "Post not found"}), 404
 
     return jsonify(companypost.serialize()), 200
+
 
 @api.route('/post/<int:companypost_id>', methods=['GET'])
 @jwt_required(optional=True)
@@ -579,11 +697,11 @@ def get_post(companypost_id):
 def delete_post(companypost_id):
 
     companypost = CompanyPost.query.filter_by(id=companypost_id).first()
-    
+
     if companypost is None:
         return jsonify({
             "error": "Company Post not found"
-        }), 404 
+        }), 404
 
     db.session.delete(companypost)
     db.session.commit()
@@ -594,62 +712,62 @@ def delete_post(companypost_id):
 @api.route('/posts/admin', methods=['POST'])
 def create_post_admin():
     body = request.get_json()
-    
-    
+
     if not body or "message" not in body:
         return jsonify({"msg": "El mensaje es obligatorio"}), 400
 
     try:
-        
+
         new_post = CompanyPost(
             id_company=body["id_company"],
             message=body['message'],
             image=body.get('image'),
-            content_type=body.get('content_type', 'announcement') 
+            content_type=body.get('content_type', 'announcement')
         )
 
         db.session.add(new_post)
         db.session.commit()
-        
+
         return jsonify(new_post.serialize()), 201
 
     except Exception as e:
         db.session.rollback()
 
-        print(f"Error en base de datos: {str(e)}") 
+        print(f"Error en base de datos: {str(e)}")
         return jsonify({"msg": "Error interno al crear el post"}), 500
+
 
 @api.route('/posts', methods=['POST'])
 @jwt_required()
 def create_post():
     body = request.get_json()
-    
-    
+
     if not body or "message" not in body:
         return jsonify({"msg": "El mensaje es obligatorio"}), 400
 
     try:
-        
+
         company_identity = get_jwt_identity()
-        
+
         # Creamos el post
         new_post = CompanyPost(
             id_company=company_identity,
             message=body['message'],
             image=body.get('image'),
-            content_type=body.get('content_type', 'announcement') 
+            content_type=body.get('content_type', 'announcement')
         )
 
         db.session.add(new_post)
         db.session.commit()
-        
+
         return jsonify(new_post.serialize()), 201
 
     except Exception as e:
         db.session.rollback()
 
-        print(f"Error en base de datos: {str(e)}") 
+        print(f"Error en base de datos: {str(e)}")
         return jsonify({"msg": "Error interno al crear el post"}), 500
+
 
 @api.route('/post/<int:post_id>/like', methods=['POST'])
 @jwt_required()
@@ -979,9 +1097,10 @@ def add_favorite_console(user_id, console_id):
 @api.route('/console/favorites/<int:user_id>/<int:console_id>', methods=['DELETE'])
 def delete_console_favorite(user_id, console_id):
 
-    favorite = ConsoleFavorites.query.filter_by(user_id=user_id, console_id=console_id).first()
-    
-    print(f"Buscando en DB: User {user_id}, Console {console_id}") 
+    favorite = ConsoleFavorites.query.filter_by(
+        user_id=user_id, console_id=console_id).first()
+
+    print(f"Buscando en DB: User {user_id}, Console {console_id}")
 
     if favorite is None:
         print("No se encontró el favorito en la base de datos")
@@ -1004,14 +1123,15 @@ def delete_console_favorite(user_id, console_id):
 
 @api.route('/game/favorites/<int:user_id>', methods=['GET'])
 def get_user_game_favorites(user_id):
-    
+
     favorites = GameFavorites.query.filter_by(user_id=user_id).all()
-    
+
     if not favorites:
-        
+
         return jsonify([]), 200
-        
+
     return jsonify([fav.serialize() for fav in favorites]), 200
+
 
 @api.route('/game/favorites/<int:user_id>/<int:game_id>', methods=['POST'])
 def add_favorite_game_admin(user_id, game_id):
@@ -1044,6 +1164,7 @@ def add_favorite_game_admin(user_id, game_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": str(e)}), 500
+
 
 @api.route('/game/favorites/<int:game_id>', methods=['POST', 'DELETE'])
 @jwt_required()
@@ -1130,33 +1251,39 @@ def signup():
 @api.route('/search', methods=['GET'])
 def search_everything():
     query = request.args.get('query', '')
-    search_pattern = f"%{query}%"
+    if not query:
+        return jsonify({"consoles": [], "companies": []}), 200
 
-    games = Game.query.filter(Game.name.ilike(search_pattern)).limit(5).all()
+    search_pattern = f"%{query}%"
     consoles = Console.query.filter(
         Console.name.ilike(search_pattern)).limit(5).all()
-    companies = Company.query.filter(Company.name.ilike(search_pattern)).limit(5).all()
+    companies = Company.query.filter(
+        Company.name.ilike(search_pattern)).limit(5).all()
 
-    results = []
+    return jsonify({
+        "consoles": [c.serialize() for c in consoles],
+        "companies": [com.serialize() for com in companies]
+    }), 200
 
-    for g in games:
-        data = g.serialize()
-        data["type"] = "games"
-        results.append(data)
 
-    for c in consoles:
-        data = c.serialize()
-        data["type"] = "consoles"
-        results.append(data)
+@api.route('search/rawg', methods=['GET'])
+def search_rawg():
+    search_query = request.args.get('q', '')
+    api_key = os.getenv("RAWG_API_KEY")
 
-    for com in companies:
-        data = com.serialize()
-        data["type"] = "companies"
-        results.append(data)
+    if not search_query:
+        return jsonify([]), 200
 
-    return jsonify({"games": [r for r in results if r["type"] == "games"],
-                    "consoles": [r for r in results if r["type"] == "consoles"],
-                    "companies": [r for r in results if r["type"] == "companies"]})
+    url = f"https://api.rawg.io/api/games?key={api_key}&search={search_query}&page_size=5"
+
+    try:
+        response = requests.get(url)
+        data = response.json()
+
+        return jsonify(data.get("results", [])), 200
+    except Exception as e:
+        print(f"Error en RAWG: {e}")
+        return jsonify([]), 500
 
 
 # =========================
@@ -1237,3 +1364,28 @@ def signup_admin():
     }
 
     return jsonify(response_body), 201
+
+# =========================
+# COMPANY STATS
+# =========================
+
+
+@api.route('/company/analytics/<int:company_id>', methods=['GET'])
+def get_company_analytics(company_id):
+    # Contamos posts
+    total_posts = CompanyPost.query.filter_by(id_company=company_id).count()
+
+    total_likes = db.session.query(func.count(PostLike.id)).join(
+        CompanyPost).filter(CompanyPost.id_company == company_id).scalar()
+    total_comments = db.session.query(func.count(PostComment.id)).join(
+        CompanyPost).filter(CompanyPost.id_company == company_id).scalar()
+
+    total_shares = db.session.query(func.sum(CompanyPost.shares)).filter(
+        CompanyPost.id_company == company_id).scalar() or 0
+
+    return jsonify({
+        "total_posts": total_posts,
+        "total_likes": total_likes,
+        "total_comments": total_comments,
+        "total_shares": total_shares
+    }), 200

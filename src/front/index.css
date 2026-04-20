@@ -2613,3 +2613,60 @@ body {
 .shadow-neon {
     box-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
 }
+
+
+.analytics-wrapper {
+    background-color: #0b0e11;
+    min-height: 100vh;
+    padding-top: 50px;
+    color: #e9ecef;
+}
+
+.gn-title {
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    color: #f8f9fa;
+}
+
+.stat-card-gamenet {
+    background: #15191f;
+    border: 1px solid #2d333b;
+    border-radius: 16px;
+    padding: 30px;
+    height: 100%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.stat-card-gamenet:hover {
+    transform: translateY(-8px);
+    border-color: #198754; /* El verde success de tu icono */
+    box-shadow: 0 12px 30px rgba(25, 135, 84, 0.15);
+}
+
+.gn-icon-box {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: rgba(25, 135, 84, 0.1);
+    color: #198754;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.gn-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #adb5bd;
+    letter-spacing: 1px;
+}
+
+.gn-value {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #ffffff;
+    margin-top: 5px;
+}
