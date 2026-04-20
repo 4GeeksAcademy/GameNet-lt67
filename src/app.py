@@ -63,7 +63,10 @@ def handle_invalid_usage(error):
 def sitemap():
     if ENV == "development":
         return generate_sitemap(app)
-    return send_from_directory(static_file_dir, 'index.html')
+    try:
+        return send_from_directory(static_file_dir, 'index.html')
+    except Exception:
+        return jsonify({"message": "GameNet API is running"}), 200
 
 # any other endpoint will try to serve it like a static file
 @app.route('/<path:path>', methods=['GET'])
@@ -78,7 +81,7 @@ def serve_any_other_file(path):
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 10000))
-    app.run(host='0.0.0.0', port=PORT, debug=False)
+    app.run(host='0.0.0.0', port=PORT)
 
 @jwt.invalid_token_loader
 def invalid_token_callback(error):
