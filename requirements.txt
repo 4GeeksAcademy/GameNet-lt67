@@ -1,10 +1,24 @@
+# --- Base y Servidor ---
 flask
 flask-sqlalchemy
 flask-cors
 flask-migrate
-flask-swagger
-flask-jwt-extended
 gunicorn
 python-dotenv
-google-generativeai
 requests
+
+# --- Seguridad y Documentación ---
+flask-jwt-extended
+flask-swagger
+
+# --- Inteligencia Artificial y Google ---
+google-generativeai
+google-api-python-client
+google-auth
+google-auth-httplib2
+
+# --- Utilidades y Git (de tu lista original) ---
+GitPython
+cryptography
+pydantic
+tqdm
