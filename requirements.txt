@@ -3,6 +3,7 @@ flask-sqlalchemy
 flask-cors
 flask-migrate
 flask-swagger
+flask-jwt-extended
 gunicorn
 python-dotenv
 google-generativeai
