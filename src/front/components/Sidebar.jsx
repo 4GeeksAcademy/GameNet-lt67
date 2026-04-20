@@ -1,5 +1,6 @@
 import React from 'react';
 import { TrendingUp, Gamepad2, Trophy, Calendar } from 'lucide-react';
+import { AIRecommendations } from './AIRecommendations';
 
 export function Sidebar() {
     const trendingGames = [
@@ -41,6 +42,8 @@ export function Sidebar() {
                     </div>
                 </div>
             </div>
+
+            <AIRecommendations/>
 
             {/* Upcoming Events */}
             <div className="card sidebar-card">

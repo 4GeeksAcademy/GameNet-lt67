@@ -6,7 +6,7 @@ function GamesUser() {
     const navigate = useNavigate();
     const [games, setGames] = useState([]);
 
-    // 1. Obtener juegos sincronizados con el usuario logueado
+    
     async function getGames() {
         const token = localStorage.getItem("token");
         try {
@@ -27,7 +27,7 @@ function GamesUser() {
         getGames();
     }, []);
 
-    // 2. Función única para manejar el Favorito (Toggle)
+    
     const toggleFavorite = async (id) => {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -36,7 +36,7 @@ function GamesUser() {
         }
 
         try {
-            // Usamos el endpoint que ya tienes listo para el toggle
+            
             const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/game/${id}/favorites`, {
                 method: "POST",
                 headers: {
@@ -48,8 +48,6 @@ function GamesUser() {
             if (response.ok) {
                 const data = await response.json();
                 
-                // Actualizamos el estado local de 'games' para que el cambio sea instantáneo
-                // El backend debería devolver un booleano en data.is_favorite (o similar)
                 setGames(prevGames => 
                     prevGames.map(game => 
                         game.id === id 

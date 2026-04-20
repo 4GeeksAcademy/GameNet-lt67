@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { 
-    Building2, Mail, Globe, Image as ImageIcon, 
-    FileText, Save, ArrowLeft, Layout, 
-    ShieldCheck, RefreshCcw 
+import {
+    Building2, Mail, Globe, Image as ImageIcon,
+    FileText, Save, ArrowLeft, Layout,
+    ShieldCheck, RefreshCcw, CheckCircle2
 } from "lucide-react";
 
 function UpdateCompany() {
@@ -16,6 +16,7 @@ function UpdateCompany() {
     const [website, setWebsite] = useState('');
     const [logo, setLogo] = useState('');
     const [banner, setBanner] = useState('');
+    const [verified, setVerified] = useState(false);
 
     useEffect(() => {
         fetch(import.meta.env.VITE_BACKEND_URL + "/api/company/" + companyId)
@@ -27,6 +28,7 @@ function UpdateCompany() {
                 setWebsite(data.website_url);
                 setLogo(data.logo);
                 setBanner(data.banner_img);
+                setVerified(data.verified)
             })
             .catch((error) => console.log(error));
     }, [companyId]);
@@ -41,8 +43,9 @@ function UpdateCompany() {
                 "email": email,
                 "description": description,
                 "website_url": website,
-                "logo_img": logo,
-                "banner_img": banner
+                "logo": logo,
+                "banner_img": banner,
+                "verified": verified
             })
         };
         fetch(import.meta.env.VITE_BACKEND_URL + "/api/company/" + companyId, requestOptions)
@@ -57,7 +60,7 @@ function UpdateCompany() {
     return (
         <div className="admin-page-container py-5 min-vh-100" style={{ backgroundColor: '#0a0b0d' }}>
             <div className="container">
-                
+
                 {/* Header Section */}
                 <div className="d-flex align-items-center justify-content-between mb-5 px-lg-4">
                     <div className="d-flex align-items-center gap-3">
@@ -74,12 +77,12 @@ function UpdateCompany() {
                 </div>
 
                 <div className="row g-4">
-                    
+
                     <div className="col-lg-4">
                         <div className="admin-card-wrapper p-4 border border-secondary rounded-4 bg-dark-soft h-100 shadow">
                             <h6 className="text-primary fw-bold mb-4 uppercase small tracking-widest">Brand Assets</h6>
-                            
-                            
+
+
                             <div className="mb-4 text-center">
                                 <label className="text-white-50 small d-block mb-2">Corporate Logo</label>
                                 <div className="logo-preview-box mx-auto rounded-circle d-flex align-items-center justify-content-center border border-secondary overflow-hidden bg-black" style={{ width: '120px', height: '120px' }}>
@@ -108,33 +111,54 @@ function UpdateCompany() {
                         <form className="admin-card-wrapper p-4 p-lg-5 border border-primary-subtle rounded-4 bg-dark-soft shadow-lg" onSubmit={sendData}>
                             <div className="row">
                                 <div className="col-md-12 mb-3">
-                                    <label className="form-label text-primary small fw-bold"><Building2 size={14} className="me-1"/> COMPANY NAME</label>
+                                    <label className="form-label text-primary small fw-bold"><Building2 size={14} className="me-1" /> COMPANY NAME</label>
                                     <input value={name} onChange={(e) => setName(e.target.value)} type="text" className="form-control custom-input-dark" required />
                                 </div>
 
                                 <div className="col-md-12 mb-3">
-                                    <label className="form-label text-primary small fw-bold"><Mail size={14} className="me-1"/> CORPORATE EMAIL</label>
+                                    <label className="form-label text-primary small fw-bold"><Mail size={14} className="me-1" /> CORPORATE EMAIL</label>
                                     <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="form-control custom-input-dark" required />
                                 </div>
 
                                 <div className="col-md-12 mb-3">
-                                    <label className="form-label text-primary small fw-bold"><Globe size={14} className="me-1"/> WEBSITE URL</label>
+                                    <label className="form-label text-primary small fw-bold"><Globe size={14} className="me-1" /> WEBSITE URL</label>
                                     <input value={website} onChange={(e) => setWebsite(e.target.value)} type="text" className="form-control custom-input-dark" />
                                 </div>
 
                                 <div className="col-md-6 mb-3">
-                                    <label className="form-label text-primary small fw-bold"><ImageIcon size={14} className="me-1"/> LOGO ASSET (URL)</label>
+                                    <label className="form-label text-primary small fw-bold"><ImageIcon size={14} className="me-1" /> LOGO ASSET (URL)</label>
                                     <input value={logo} onChange={(e) => setLogo(e.target.value)} type="text" className="form-control custom-input-dark" />
                                 </div>
 
                                 <div className="col-md-6 mb-3">
-                                    <label className="form-label text-primary small fw-bold"><Layout size={14} className="me-1"/> BANNER ASSET (URL)</label>
+                                    <label className="form-label text-primary small fw-bold"><Layout size={14} className="me-1" /> BANNER ASSET (URL)</label>
                                     <input value={banner} onChange={(e) => setBanner(e.target.value)} type="text" className="form-control custom-input-dark" />
                                 </div>
 
                                 <div className="col-md-12 mb-4">
-                                    <label className="form-label text-primary small fw-bold"><FileText size={14} className="me-1"/> CORPORATE DESCRIPTION</label>
+                                    <label className="form-label text-primary small fw-bold"><FileText size={14} className="me-1" /> CORPORATE DESCRIPTION</label>
                                     <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="form-control custom-input-dark" rows="4"></textarea>
+                                </div>
+                            </div>
+
+                            <div className="verification-switch-box p-3 rounded-3 d-flex align-items-center justify-content-between border border-primary-subtle bg-primary-transparent mb-3">
+                                <div className="d-flex align-items-center gap-3">
+                                    <CheckCircle2 size={24} className={verified ? "text-warning" : "text-white-50"} />
+                                    <div>
+                                        <p className="m-0 fw-bold text-white small">Verified Partner Status</p>
+                                        <p className="m-0 text-white-50 x-small">Official badge will be displayed on all your games.</p>
+                                    </div>
+                                </div>
+                                <div className="form-check form-switch m-0">
+                                    <input
+                                        className="form-check-input custom-switch"
+                                        type="checkbox"
+                                        role="switch"
+                                        checked={verified}
+                                        onChange={(e) => {
+                                            setVerified(e.target.checked);
+                                        }}
+                                    />
                                 </div>
                             </div>
 

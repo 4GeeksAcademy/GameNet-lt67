@@ -28,12 +28,17 @@ function LoginCompany() {
 
         if (response.status === 200) {
             const data = await response.json();
+
             localStorage.setItem("auth_company", true);
             localStorage.setItem("token_company", data.access_token);
+
+            localStorage.setItem("company_data", JSON.stringify(data.company));
+
             dispatch({
                 type: "login_company",
-                payload: data
+                payload: data.company 
             });
+
             navigate("/company/dashboard");
         } else {
             const errorData = await response.json();

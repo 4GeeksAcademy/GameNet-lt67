@@ -27,7 +27,6 @@ export const CompanyDashboard = () => {
             });
             if (resp.ok) {
                 const data = await resp.json();
-                console.log("Datos recibidos:", data); 
                 setCompanyData(data);
             }
         } catch (error) {
@@ -106,7 +105,7 @@ export const CompanyDashboard = () => {
             <div className="row justify-content-center">
                 <div className="col-lg-8">
 
-                    {/* SECCIÓN DE PERFIL ESTILO GAMENET */}
+                   
                     <div className="company-profile-section mb-5 overflow-hidden">
                         <div className="profile-banner-container">
                             <img
